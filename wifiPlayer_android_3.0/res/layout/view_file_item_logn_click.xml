@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical" >
+	<Button 
+	    android:id="@+id/openFileButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/open_file"/>
+	<Button 
+	    android:id="@+id/delFileButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/del_file"/>
+	<Button 
+	    android:id="@+id/cope2PhoneFileButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/cope_2_phone"/>
+	<Button 
+	    android:id="@+id/cancelButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/cancel"/>
+</LinearLayout>

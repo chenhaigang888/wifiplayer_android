@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical" >
+	<Button 
+	    android:id="@+id/searchPcButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/search_pc"/>
+	<Button 
+	    android:id="@+id/connPcUseIPButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/conn_the_pc_use_ip"/>
+	<Button 
+	    android:id="@+id/cancelButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/cancel"/>
+</LinearLayout>

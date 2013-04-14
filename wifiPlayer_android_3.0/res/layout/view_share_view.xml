@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical" >
+	<Button 
+	    android:id="@+id/sinaWeiBoShareButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/sina_weibo_share"/>
+	<Button 
+	    android:id="@+id/txWeiBoShareButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/tx_weibo_share"/>
+	<Button 
+	    android:id="@+id/emailShareButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/email_share"/>
+	<Button 
+	    android:id="@+id/cancelButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/item_long_click_view_btn"
+	    android:text="@string/cancel"/>
+</LinearLayout>
