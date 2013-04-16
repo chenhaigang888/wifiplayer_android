@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -13,7 +14,7 @@ import android.util.Log;
  */
 public class ConnServer {
 	static Socket s = null;
-	public static void conn(final InetAddress addr){
+	public static void conn(final InetAddress addr, final Context context){
 		new Thread(new Runnable() {
 			
 			@Override
@@ -21,10 +22,9 @@ public class ConnServer {
 				try {
 					s = new Socket(addr, 9528);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				new ReceiveThread(s).start();
+				new ReceiveThread(s, context).start();
 			}
 		}).start();
 		
@@ -34,12 +34,12 @@ public class ConnServer {
 	 * 发送内容
 	 * @param sendData
 	 */
-	public static void send(byte[] sendData) {
+	public static void send(byte[] sendData, Context context) {
 		Log.i("chg", "socket:" + s);
 		if (s != null) {
-			new SendThread(null, s, sendData).start();
+			new SendThread(context, s, sendData).start();
 		} else {
-			send(sendData);
+			send(sendData, context);
 		}
 		
 	}

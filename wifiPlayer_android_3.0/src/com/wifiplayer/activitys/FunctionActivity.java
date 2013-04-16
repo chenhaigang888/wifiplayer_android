@@ -10,11 +10,15 @@ import com.wifiplayer.activitys.views.EnableCtrPcListView;
 import com.wifiplayer.adapters.EnableCtrlPCAdapter;
 import com.wifiplayer.adapters.FileListAdapter;
 import com.wifiplayer.bean.PcFile;
+import com.wifiplayer.bean.packages.Head;
 import com.wifiplayer.net.udp.SearchPc;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -77,7 +81,21 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		dirLv.setOnItemClickListener(this);
 		dirLv.setOnItemLongClickListener(this);
 
+		
+		registerBroadCastReceiver();
 	}
+	
+	
+	/**
+	 * 注册一个广播监听器
+	 */
+	private void registerBroadCastReceiver() {
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("com.wifiplayer.activitys.FunctionActivity");
+		registerReceiver(new MyBroadCastReceiver(), intentFilter);
+	}
+
+
 
 	/**
 	 * 加载数据
@@ -147,15 +165,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	private void showMainDir() {
 		List<PcFile> files = new ArrayList<PcFile>();
 		PcFile pf = null;
-
-		pf = new PcFile("C", "", true, "50GB", null);
-		files.add(pf);
-		pf = new PcFile("D", "", true, "60GB", null);
-		files.add(pf);
-		pf = new PcFile("E", "", true, "80GB", null);
-		files.add(pf);
-		pf = new PcFile("F", "", true, "120GB", null);
-		files.add(pf);
+		
+		
 		Message msg = new Message();
 		msg.obj = files;
 		msg.setTarget(fileHandler);
@@ -402,6 +413,18 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 				}
 			}
 		}).start();
+	}
+	
+	class MyBroadCastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			
+			
+			
+		}
+		
 	}
 	
 

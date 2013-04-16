@@ -71,10 +71,8 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		dialog.cancel();
-//		FunctionActivity activity = (FunctionActivity)context;
-//		activity.mainDirBtnClick();
 		DatagramPacket pc = (DatagramPacket) arg0.getAdapter().getItem(arg2);
-		ConnServer.conn(pc.getAddress());
-		ConnServer.send("我是android".getBytes());
+		ConnServer.conn(pc.getAddress(), context);
+		ConnServer.send("我是android".getBytes(), context);
 	}
 }
