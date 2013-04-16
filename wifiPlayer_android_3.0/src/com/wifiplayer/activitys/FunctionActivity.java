@@ -1,11 +1,16 @@
 package com.wifiplayer.activitys;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.wifiplayer.R;
+import com.wifiplayer.activitys.views.EnableCtrPcListView;
+import com.wifiplayer.adapters.EnableCtrlPCAdapter;
 import com.wifiplayer.adapters.FileListAdapter;
 import com.wifiplayer.bean.PcFile;
+import com.wifiplayer.net.udp.SearchPc;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -132,9 +137,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	/**
 	 * 主目录按钮点击事件
 	 */
-	private void mainDirBtnClick() {
+	public void mainDirBtnClick() {
 		showMainDir();
-
 	}
 
 	/**
@@ -177,8 +181,10 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				
+				search();
 			}
+
+
 		});
 		
 		connPcUseIPBtn.setOnClickListener(new View.OnClickListener() {
@@ -358,4 +364,45 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		});
 		return true;
 	}
+	
+	/**
+	 * 搜索局域网内可以控制的电脑
+	 */
+	private void search() {
+		final Handler searchHandler = new Handler() {
+
+			@Override
+			public void handleMessage(Message msg) {
+				List<DatagramPacket> pcs = (List<DatagramPacket>) msg.obj;
+				if (pcs.isEmpty()) {
+					Toast.makeText(context, "没有可以控制的电脑", Toast.LENGTH_LONG).show();
+					return;
+				}
+				Dialog dialog = new Dialog(context);
+				View view = new EnableCtrPcListView(context, dialog, pcs).getView();
+				dialog.setContentView(view);
+				dialog.show();
+				
+				super.handleMessage(msg);
+			}
+			
+		};
+		
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					SearchPc.connServer();
+					List<DatagramPacket> pcs = SearchPc.receive();
+					Message msg = new Message();
+					msg.obj = pcs;
+					msg.setTarget(searchHandler);
+					msg.sendToTarget();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	
+
 }

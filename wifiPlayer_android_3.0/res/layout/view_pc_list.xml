@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+   	android:gravity="center"
+    android:orientation="vertical" >
+	<TextView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center"
+	    android:textSize="20sp"
+	    android:text="@string/enable_control_pc"/>
+	<ListView 
+	    android:id="@+id/pcListListView"
+	    android:layout_width="fill_parent"
+	    android:layout_margin="5dp"
+	    android:layout_height="200dp"/>
+	<Button 
+	    android:id="@+id/cancelButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="5dp"
+	    android:text="@string/cancel"/>
+</LinearLayout>

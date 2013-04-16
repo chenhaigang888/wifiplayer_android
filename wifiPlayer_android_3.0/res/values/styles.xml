@@ -30,5 +30,16 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+    
+         <!-- 没有title没有背景图片的Dialog -->
+    <style name="no_title_no_bg_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+ <!-- 窗口是否为半透明 -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+ <!-- dialog以外的地方变黑 -->
+        <item name="android:focusable">true</item>
+    </style>
 
 </resources>
