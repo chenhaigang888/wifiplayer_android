@@ -19,10 +19,10 @@ public class SearchPc {
 	public static List<DatagramPacket> pcs = null;
 	public static void connServer() throws IOException {
 		pcs = new ArrayList<DatagramPacket> ();
-		ds = new DatagramSocket();
+		ds = new DatagramSocket(); 
 		String sendStr = "Hello! I'm Client";
 		byte[] sendBuf = sendStr.getBytes();
-		InetAddress addr = InetAddress.getByName("192.168.1.255");
+		InetAddress addr = InetAddress.getByName("192.168.1.106");
 		int port = 9527;
 		DatagramPacket sendDp = new DatagramPacket(sendBuf, sendBuf.length, addr, port);
 		ds.send(sendDp);

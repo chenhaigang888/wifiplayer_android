@@ -15,6 +15,7 @@ import com.wifiplayer.adapters.FileListAdapter;
 import com.wifiplayer.bean.ReqReplyOp;
 import com.wifiplayer.bean.myCtrlView.MyImageViewButton;
 import com.wifiplayer.bean.packages.Head;
+import com.wifiplayer.net.tcp.ConnServer;
 import com.wifiplayer.net.udp.SearchPc;
 
 import android.app.Activity;
@@ -55,6 +56,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 	private Context context = FunctionActivity.this;
 	
+	MyBroadCastReceiver br = null;
+	
 	public static String currDir = null;
 
 	Handler fileHandler = new Handler() {
@@ -92,18 +95,25 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		dirLv.setOnItemClickListener(this);
 		dirLv.setOnItemLongClickListener(this);
 
-		
-		registerBroadCastReceiver();
+		br = new MyBroadCastReceiver();
+		registerBroadCastReceiver(br);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(br);
+		ConnServer.close();
+		super.onDestroy();
 	}
 	
 	
 	/**
 	 * 注册一个广播监听器
 	 */
-	private void registerBroadCastReceiver() {
+	private void registerBroadCastReceiver(MyBroadCastReceiver br) {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.wifiplayer.activitys.FunctionActivity");
-		registerReceiver(new MyBroadCastReceiver(), intentFilter);
+		registerReceiver(br, intentFilter);
 	}
 
 	/**

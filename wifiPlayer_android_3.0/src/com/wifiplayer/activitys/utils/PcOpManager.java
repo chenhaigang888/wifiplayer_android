@@ -12,7 +12,7 @@ import com.wifiplayer.net.tcp.ConnServer;
  * @author Administrator
  *
  */
-public class PcOpManager {
+public class PcOpManager { 
 
 	/**
 	 * 打开文件夹
@@ -20,7 +20,7 @@ public class PcOpManager {
 	 */
 	public static void openDir(String dirPath, Context context) {
 		byte[] pathArr = dirPath.getBytes();
-		Head head = new Head(Head.OPEN_DIR, (short)pathArr.length, 0, 0);
+		Head head = new Head(Head.OPEN_DIR, pathArr.length, 0, 0);
 		OpenDirBody odb = new OpenDirBody(pathArr);
 		Packages p = new Packages(head, odb);
 		ConnServer.send(p.getPackage(), context);
@@ -30,7 +30,7 @@ public class PcOpManager {
 	 * @param dirPath
 	 */
 	public static void openMainDir(Context context) {
-		Head head = new Head(Head.CONN_SERVER, (short)0, 0, 0);
+		Head head = new Head(Head.CONN_SERVER, 0, 0, 0);
 		Packages p = new Packages(head, null);
 		ConnServer.send(p.getPackage(), context);
 	}

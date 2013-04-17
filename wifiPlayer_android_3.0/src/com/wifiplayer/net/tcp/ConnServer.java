@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * 连接服务器
@@ -20,6 +19,10 @@ public class ConnServer {
 			@Override
 			public void run() {
 				try {
+//					if (s != null) {
+//						close();
+//						s = null;
+//					}
 					s = new Socket(addr, 9528);
 					new ReceiveThread(s, context).start();
 				} catch (IOException e) {
@@ -36,11 +39,30 @@ public class ConnServer {
 	 * @param sendData
 	 */
 	public static void send(byte[] sendData, Context context) {
-		Log.i("chg", "socket:" + s);
+//		Log.i("chg", "socket:" + s);
 		if (s != null) {
 			new SendThread(context, s, sendData).start();
 		} else {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			send(sendData, context);
+		}
+		
+	}
+	
+	/**
+	 * 关闭服务
+	 */
+	public static void close() {
+		try {
+			s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}

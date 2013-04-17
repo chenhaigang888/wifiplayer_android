@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 public class Head {
 
 	private short cmd;//	包标识：也可以叫命令，直接表示包的含义
-	private short packBodyLenth;//	包长：表示整个包的长度
+	private int packBodyLenth;//	包长：表示整个包的长度
 	private int channel;//	信道：保存当前socket id
 	private int crc;//	crc：包体的crc32计算结果，用于检测包的准确性，如果不正确，则包被丢弃
 	
@@ -55,7 +55,7 @@ public class Head {
 	 */
 	public static final short OPEN_DIR_REPLY = 0x2008;
 	
-	public Head(short cmd, short packBodyLenth, int channel, int crc) {
+	public Head(short cmd, int packBodyLenth, int channel, int crc) {
 		super();
 		this.cmd = cmd;
 		this.packBodyLenth = packBodyLenth;
@@ -71,11 +71,11 @@ public class Head {
 		this.cmd = cmd;
 	}
 
-	public short getPackBodyLenth() {
+	public int getPackBodyLenth() {
 		return packBodyLenth;
 	}
 
-	public void setPackBodyLenth(short packBodyLenth) {
+	public void setPackBodyLenth(int packBodyLenth) {
 		this.packBodyLenth = packBodyLenth;
 	}
 
@@ -100,13 +100,13 @@ public class Head {
 	 * @return
 	 */
 	public byte[] getBtye() {
-		ByteBuffer buffer = ByteBuffer.allocate(12);
+		ByteBuffer buffer = ByteBuffer.allocate(14);
 		buffer.putShort(0, cmd);
-		buffer.putShort(2, packBodyLenth);
-		buffer.putInt(4, channel);
-		buffer.putInt(8, crc);
+		buffer.putInt(2, packBodyLenth);
+		buffer.putInt(6, channel);
+		buffer.putInt(10, crc);
 		
-		byte[] head = new byte[12];
+		byte[] head = new byte[14];
 		buffer.get(head);
 		return head;
 	}
@@ -120,9 +120,9 @@ public class Head {
 	public static Head resolveHead(byte[] heads) {
 		ByteBuffer cmdBuffer = ByteBuffer.wrap(heads);
 		short cmd = cmdBuffer.getShort(0);
-		short packBodyLenth = cmdBuffer.getShort(2);
-		int channel = cmdBuffer.getInt(4);
-		int crc = cmdBuffer.getInt(8);
+		int packBodyLenth = cmdBuffer.getInt(2);
+		int channel = cmdBuffer.getInt(6);
+		int crc = cmdBuffer.getInt(10);
 		Head head = new Head(cmd, packBodyLenth, channel, crc);
 		return head;
 
