@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources >
+    <declare-styleable name="MyView">
+        <attr name="myText" format="string"/>
+        <attr name="myTextColor" format="color"/>
+        <attr name="myTextSize" format="dimension"/> 
+    </declare-styleable>
+    <declare-styleable name="MyImageViewButton">
+        <attr name="text" format="dimension"/>
+        <attr name="imageResId" format="dimension"/>
+        <attr name="backGroundBefore" format="dimension"/>
+        <attr name="backGroundAfter" format="dimension"/>
+        <attr name="bgImg" format="dimension"/>
+        <attr name="TextColor" format="dimension"/>
+        <attr name="TextSize" format="dimension"/>
+        <attr name="ImgButnOrientation" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="SelectionBtnAtt">
+        <attr name="selectionBtn_background" format="dimension"/>
+        <attr name="leftBtn_selection_before" format="dimension"/>
+        <attr name="leftBtn_selection_after" format="dimension"/>
+        <attr name="rightBtn_selection_before" format="dimension"/>
+        <attr name="rightBtn_selection_after" format="dimension"/>
+        <attr name="leftBtn_text" format="dimension"/>
+        <attr name="rightBtn_text" format="dimension"/>
+        <attr name="selectionBtn_text_color" format="dimension"/>
+        <attr name="selectionBtn_text_size" format="float"/>
+        <attr name="text_vilibility" format="boolean"/>
+    </declare-styleable>
+</resources>

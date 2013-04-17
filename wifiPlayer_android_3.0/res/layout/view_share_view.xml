@@ -2,30 +2,108 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@color/white"
+    android:background="@drawable/dialog_bg"
     android:orientation="vertical" >
-	<Button 
-	    android:id="@+id/sinaWeiBoShareButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/sina_weibo_share"/>
-	<Button 
-	    android:id="@+id/txWeiBoShareButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/tx_weibo_share"/>
-	<Button 
-	    android:id="@+id/emailShareButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/email_share"/>
-	<Button 
-	    android:id="@+id/cancelButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/cancel"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_title"
+        android:gravity="center"
+        android:text="@string/share_btn"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:id="@+id/sinaWeiBoShareLinearLayout"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/sina" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/sina_weibo_share"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/txShareLinearLayout"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/tx" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/tx_weibo_share"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/emailShareLinearLayout"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/email" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/email_share"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cancelLinearLayout"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/cancel" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/cancel"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
 </LinearLayout>

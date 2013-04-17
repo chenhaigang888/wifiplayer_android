@@ -1,19 +1,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:gravity="center"
     android:orientation="horizontal" >
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_launcher" />
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/computer" />
 
     <TextView
         android:id="@+id/pcNameTextview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp" />
+        android:lines="1"
+        android:textColor="@color/white"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="20dp" />
 
 </LinearLayout>

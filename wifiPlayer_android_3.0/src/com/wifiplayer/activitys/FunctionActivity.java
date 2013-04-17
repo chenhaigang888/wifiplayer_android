@@ -2,14 +2,18 @@ package com.wifiplayer.activitys;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.wifiplayer.R;
+import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.activitys.views.EnableCtrPcListView;
-import com.wifiplayer.adapters.EnableCtrlPCAdapter;
 import com.wifiplayer.adapters.FileListAdapter;
-import com.wifiplayer.bean.PcFile;
+import com.wifiplayer.bean.ReqReplyOp;
+import com.wifiplayer.bean.myCtrlView.MyImageViewButton;
 import com.wifiplayer.bean.packages.Head;
 import com.wifiplayer.net.udp.SearchPc;
 
@@ -24,10 +28,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,20 +47,22 @@ import android.widget.Toast;
 public class FunctionActivity extends Activity implements View.OnClickListener,
 		OnItemClickListener, OnItemLongClickListener {
 
-	private Button shareBtn;// 分享按钮
-	private Button recommendBtn;// 推荐软件按钮
-	private Button connPCBtn;// 连接电脑按钮
-	private Button mainDirBtn;// 主目录按钮
+	private MyImageViewButton shareBtn;// 分享按钮
+	private MyImageViewButton recommendBtn;// 推荐软件按钮
+	private MyImageViewButton connPCBtn;// 连接电脑按钮
+	private MyImageViewButton mainDirBtn;// 主目录按钮
 	private ListView dirLv;// 文件目录列表
 
 	private Context context = FunctionActivity.this;
+	
+	public static String currDir = null;
 
 	Handler fileHandler = new Handler() {
 
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg) { 
 			super.handleMessage(msg);
-			List<PcFile> files = (List<PcFile>) msg.obj;
+			JSONArray files =  (JSONArray) msg.obj;
 			FileListAdapter adapter = new FileListAdapter(
 					context,
 					files,
@@ -68,6 +77,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE); //设置无标题
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_function);
 
 		init();// 初始化控件
@@ -95,40 +106,17 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		registerReceiver(new MyBroadCastReceiver(), intentFilter);
 	}
 
-
-
-	/**
-	 * 加载数据
-	 */
-	private void loadData() {
-		List<PcFile> files = new ArrayList<PcFile>();
-		PcFile pf = null;
-		pf = new PcFile();
-		pf.setName("上一级目录");
-		pf.setDir(true);
-		files.add(pf);
-		for (int i = 0; i < 50; i++) {
-			pf = new PcFile("文件" + i, "", i % 2 == 0 ? true : false, "10MB", null);
-			files.add(pf);
-		}
-
-		Message msg = new Message();
-		msg.obj = files;
-		msg.setTarget(fileHandler);
-		msg.sendToTarget();
-	}
-
 	/**
 	 * 初始化控件
 	 */
 	private void init() {
-		shareBtn = (Button) findViewById(R.id.shareButton);
-		recommendBtn = (Button) findViewById(R.id.recommendButton);
-		connPCBtn = (Button) findViewById(R.id.connPCButton);
-		mainDirBtn = (Button) findViewById(R.id.mainDirButton);
+		shareBtn = (MyImageViewButton) findViewById(R.id.shareButton);
+		recommendBtn = (MyImageViewButton) findViewById(R.id.recommendButton);
+		connPCBtn = (MyImageViewButton) findViewById(R.id.connPCButton);
+		mainDirBtn = (MyImageViewButton) findViewById(R.id.mainDirButton);
 		dirLv = (ListView) findViewById(R.id.dirListView);
 
-	}
+	} 
 
 	@Override
 	public void onClick(View v) {
@@ -156,22 +144,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	 * 主目录按钮点击事件
 	 */
 	public void mainDirBtnClick() {
-		showMainDir();
-	}
-
-	/**
-	 * 展示主目录内容
-	 */
-	private void showMainDir() {
-		List<PcFile> files = new ArrayList<PcFile>();
-		PcFile pf = null;
-		
-		
-		Message msg = new Message();
-		msg.obj = files;
-		msg.setTarget(fileHandler);
-		msg.sendToTarget();
-
+		PcOpManager.openMainDir(context);
 	}
 
 	/**
@@ -183,9 +156,9 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		dialog.setContentView(view);
 		dialog.show();
 		
-		Button searchPcBtn = (Button) view.findViewById(R.id.searchPcButton);//搜索局域网内可以控制的电脑
-		Button connPcUseIPBtn = (Button) view.findViewById(R.id.connPcUseIPButton);//连接指定ip的电脑
-		Button cancelBtn = (Button) view.findViewById(R.id.cancelButton);//取消按钮
+		LinearLayout searchPcBtn = (LinearLayout) view.findViewById(R.id.searchPcButton);//搜索局域网内可以控制的电脑
+		LinearLayout connPcUseIPBtn = (LinearLayout) view.findViewById(R.id.connPcUseIPButton);//连接指定ip的电脑
+		LinearLayout cancelBtn = (LinearLayout) view.findViewById(R.id.cancelButton);//取消按钮
 		
 		searchPcBtn.setOnClickListener(new View.OnClickListener() {
 			
@@ -268,10 +241,10 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		dialog.setContentView(view);
 		dialog.show();
 		
-		Button sinaWeiBoShareBtn = (Button) view.findViewById(R.id.sinaWeiBoShareButton);
-		Button txWeiBoShareBtn = (Button) view.findViewById(R.id.txWeiBoShareButton);
-		Button emailShareBtn = (Button) view.findViewById(R.id.emailShareButton);
-		Button cancelBtn = (Button) view.findViewById(R.id.cancelButton);
+		LinearLayout sinaWeiBoShareBtn = (LinearLayout) view.findViewById(R.id.sinaWeiBoShareLinearLayout);
+		LinearLayout txWeiBoShareBtn = (LinearLayout) view.findViewById(R.id.txShareLinearLayout);
+		LinearLayout emailShareBtn = (LinearLayout) view.findViewById(R.id.emailShareLinearLayout);
+		LinearLayout cancelBtn = (LinearLayout) view.findViewById(R.id.cancelLinearLayout);
 		
 		sinaWeiBoShareBtn.setOnClickListener(new View.OnClickListener() {
 			
@@ -313,14 +286,41 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		PcFile pf = (PcFile) arg0.getAdapter().getItem(arg2);
-		// 判断是否是文件夹
-		if (pf.isDir()) {// 是文件夹
-			if (pf.getName().equals("上一级目录")) {
-				showMainDir();
-			} else {// 不是文件夹
-				loadData();
+		JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
+		
+		/*判断用户点击的是否为上一页选项*/
+		try {
+			if (arg2 == 0 && !pf.getBoolean("sys")) {
+				try {
+					if (currDir == null) {
+						Toast.makeText(context, "已到主目录", Toast.LENGTH_LONG).show();
+						return;
+					}
+					currDir = currDir.substring(0, currDir.lastIndexOf("\\"));
+					PcOpManager.openDir(currDir, context);
+				} catch (Exception e) {
+					PcOpManager.openMainDir(context);
+				}
+				return;
 			}
+			
+			/*点击正常目录的时候*/
+			// 判断是否是文件夹
+			if (pf.getBoolean("dir")) {// 是文件夹
+				String path = pf.getString("path");
+				currDir = path;
+				PcOpManager.openDir(path, context);
+			} else {
+				if (pf.getBoolean("sys")) {//是系统分区
+					PcOpManager.openDir(pf.getString("name"), context);
+					currDir = pf.getString("name");
+				} else {
+					
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
@@ -389,7 +389,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 					Toast.makeText(context, "没有可以控制的电脑", Toast.LENGTH_LONG).show();
 					return;
 				}
-				Dialog dialog = new Dialog(context);
+				Dialog dialog = new Dialog(context, R.style.no_title_dialog); 
 				View view = new EnableCtrPcListView(context, dialog, pcs).getView();
 				dialog.setContentView(view);
 				dialog.show();
@@ -420,9 +420,40 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
+			ReqReplyOp rro = (ReqReplyOp) intent.getSerializableExtra("rro");
+			short cmd = rro.getCmd();
+			switch (cmd) {
+			case Head.CONN_SERVER_REPLY:
+				connServerReply(rro);
+				break;
+			case Head.OPEN_DIR_REPLY:
+				connServerReply(rro);
+				break;
+
+			default:
+				break;
+			}
+		}
+
+		/**
+		 * 控制返回内容处理
+		 * @param rro
+		 */
+		private void connServerReply(ReqReplyOp rro) {
+			int status = rro.getStatus();
 			
-			
-			
+			if (status == 0) {//操作成功
+				try {
+					JSONArray jsonArr = new JSONArray(rro.getContent());
+					Message msg = new Message();
+					msg.obj = jsonArr;
+					msg.setTarget(fileHandler);
+					msg.sendToTarget();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
 		}
 		
 	}

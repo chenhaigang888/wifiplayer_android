@@ -21,10 +21,11 @@ public class ConnServer {
 			public void run() {
 				try {
 					s = new Socket(addr, 9528);
+					new ReceiveThread(s, context).start();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				new ReceiveThread(s, context).start();
+				
 			}
 		}).start();
 		

@@ -23,7 +23,7 @@ public class Head {
 	 */
 	public static final short CONN_SERVER_REPLY = 0x1002;
 	/**
-	 * 打开电脑的文件或文件夹
+	 * 打开电脑的文件
 	 */
 	public static final short OPEN_FILE = 0x2001;
 	/**
@@ -46,6 +46,14 @@ public class Head {
 	 * 拷贝电脑上的文件到手机返回
 	 */
 	public static final short COPY_FILE_2_PHONE_REPLY = 0x2006;
+	/**
+	 * 打开文件夹
+	 */
+	public static final short OPEN_DIR = 0x2007;
+	/**
+	 * 打开文件夹返回
+	 */
+	public static final short OPEN_DIR_REPLY = 0x2008;
 	
 	public Head(short cmd, short packBodyLenth, int channel, int crc) {
 		super();

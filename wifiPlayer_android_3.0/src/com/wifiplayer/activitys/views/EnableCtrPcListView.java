@@ -1,12 +1,10 @@
 package com.wifiplayer.activitys.views;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import com.wifiplayer.R;
-import com.wifiplayer.activitys.FunctionActivity;
+import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.adapters.EnableCtrlPCAdapter;
 import com.wifiplayer.net.tcp.ConnServer;
 
@@ -29,15 +27,13 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 	private Context context;
 	private Dialog dialog;
 	private List<DatagramPacket> pcs;
-//	private Handler handler;
 	
 	public EnableCtrPcListView(Context context, Dialog dialog,
-			List<DatagramPacket> pcs/*, Handler handler*/) {
+			List<DatagramPacket> pcs) {
 		super();
 		this.context = context;
 		this.dialog = dialog;
 		this.pcs = pcs;
-//		this.handler = handler;
 	}
 
 
@@ -73,6 +69,6 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 		dialog.cancel();
 		DatagramPacket pc = (DatagramPacket) arg0.getAdapter().getItem(arg2);
 		ConnServer.conn(pc.getAddress(), context);
-		ConnServer.send("我是android".getBytes(), context);
+		PcOpManager.openMainDir(context);
 	}
 }
