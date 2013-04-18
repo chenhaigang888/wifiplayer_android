@@ -2,6 +2,7 @@ package com.wifiplayer.activitys;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -25,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,6 +42,8 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -63,6 +67,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	public static PromptDialog pd = null;
 	
 	public static String currDir = null;
+	
+	public static Handler downLoadHandler = null;
 
 	Handler fileHandler = new Handler() {
 
@@ -408,13 +414,60 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 				
 			}
 		});
-		
+		/*将电脑上的文件拷贝到手机上*/
 		cope2PhoneFileBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				Toast.makeText(context, "此功能暂时未完成,敬请期待！", Toast.LENGTH_LONG).show();
+				try {
+					
+					final Dialog downLoadDialog = new Dialog(context, R.style.no_title_dialog);
+					View downLoadView = LayoutInflater.from(context).inflate(R.layout.copy_file_2_phone_process, null);
+					downLoadDialog.setContentView(downLoadView);
+					downLoadDialog.show();
+					
+					final TextView fileNameTextView = (TextView) downLoadView.findViewById(R.id.fileNameTextView);//显示当前拷贝d文件名称
+					final ProgressBar downProgressBar = (ProgressBar) downLoadView.findViewById(R.id.downProgressBar);
+					final TextView currentProgressTextView = (TextView) downLoadView.findViewById(R.id.currentProgressTextView);//当前下载d位置
+					final TextView totalProgressTextView = (TextView) downLoadView.findViewById(R.id.totalProgressTextView);//总共需要下载长度
+					final Button okBtn = (Button) downLoadView.findViewById(R.id.okBtn);
+					
+					okBtn.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							downLoadDialog.cancel();
+						}
+					});
+					
+					downLoadHandler = new Handler() {
+						
+						@Override
+						public void handleMessage(Message msg) {
+							HashMap<String,String> map = (HashMap<String, String>) msg.obj;
+							String total = map.get("total");//文件总长度
+							String curr = map.get("curr");//当前下载的长度
+							
+							fileNameTextView.setText(getResources().getString(R.string.copying_file) + PcOpManager.copyFileName);
+							totalProgressTextView.setText(total + "MB");
+							currentProgressTextView.setText(curr + "MB");
+							
+							
+							
+							downProgressBar.setMax(new Integer(total));//设置progressBar的长度
+							downProgressBar.setProgress(new Integer(curr));
+							if (total.equals(curr)) {
+								okBtn.setVisibility(View.VISIBLE);
+							}
+							super.handleMessage(msg);
+						}
+					};
+					PcOpManager.copyFile2Phone(context, pf.getString("path"));
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -490,10 +543,22 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			case Head.OPEN_FILE_REPLY:
 				showSuccess(rro);
 				break;
+			case Head.COPY_FILE_2_PHONE_REPLY:
+				copyFileReply(rro);
+				break;
 
 			default:
 				break;
 			}
+		}
+
+		/**
+		 * 拷贝文件返回信息
+		 * @param rro
+		 */
+		private void copyFileReply(ReqReplyOp rro) {
+			
+			Toast.makeText(context, rro.getContent(), Toast.LENGTH_LONG).show();
 		}
 
 		/**

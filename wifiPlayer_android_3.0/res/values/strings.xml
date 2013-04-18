@@ -26,5 +26,7 @@
     <string name="ask">提示</string>
     <string name="del_file_remark">确定要永久删除此文件？</string>
     <string name="del_file_ok">删除成功！</string>
+    <string name="copy_file_dialog_title">文件拷贝</string>
+    <string name="copying_file">正在拷贝文件："</string>
 
 </resources>

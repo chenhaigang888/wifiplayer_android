@@ -1,6 +1,7 @@
 package com.wifiplayer.activitys.utils;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.wifiplayer.R;
 import com.wifiplayer.activitys.FunctionActivity;
@@ -15,6 +16,8 @@ import com.wifiplayer.net.tcp.ConnServer;
  *
  */
 public class PcOpManager { 
+	
+	public static String copyFileName = null;
 
 	/**
 	 * 打开文件夹
@@ -51,6 +54,17 @@ public class PcOpManager {
 	public static void openFile(Context context, String path) {
 		sendOpCMD(context, Head.OPEN_FILE, path);
 		FunctionActivity.pd.showPromptDialog(R.string.please_wait);
+	}
+	
+	/**
+	 * 将文件从pc上拷贝到手机
+	 * @param context
+	 * @param path
+	 */
+	public static void copyFile2Phone(Context context, String path) {
+		copyFileName = path.substring(path.lastIndexOf("/") + 1, path.length());
+		sendOpCMD(context, Head.COPY_FILE_2_PHONE, path);
+//		FunctionActivity.pd.showPromptDialog(R.string.please_wait);
 	}
 	
 	/**
