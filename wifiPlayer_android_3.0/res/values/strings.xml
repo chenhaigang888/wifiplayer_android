@@ -21,5 +21,10 @@
     <string name="tx_weibo_share">腾讯微博</string>
     <string name="email_share">Email</string>
     <string name="enable_control_pc">可以控制的电脑</string>
+    <string name="please_wait">请稍后...</string>
+    <string name="file_op">文件操作</string>
+    <string name="ask">提示</string>
+    <string name="del_file_remark">确定要永久删除此文件？</string>
+    <string name="del_file_ok">删除成功！</string>
 
 </resources>

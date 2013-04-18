@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.wifiplayer.R;
 import com.wifiplayer.activitys.utils.PcOpManager;
+import com.wifiplayer.activitys.utils.PromptDialog;
 import com.wifiplayer.activitys.views.EnableCtrPcListView;
 import com.wifiplayer.adapters.FileListAdapter;
 import com.wifiplayer.bean.ReqReplyOp;
@@ -27,6 +28,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -57,6 +60,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	private Context context = FunctionActivity.this;
 	
 	MyBroadCastReceiver br = null;
+	public static PromptDialog pd = null;
 	
 	public static String currDir = null;
 
@@ -83,7 +87,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //设置无标题
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_function);
-
+		
+		pd = new PromptDialog(context);
 		init();// 初始化控件
 		// loadData();// 初始化数据
 		/* 设置按钮监听事件 */
@@ -100,9 +105,16 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	}
 	
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		finish();
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
 	protected void onDestroy() {
 		unregisterReceiver(br);
 		ConnServer.close();
+		System.exit(0);
 		super.onDestroy();
 	}
 	
@@ -154,7 +166,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	 * 主目录按钮点击事件
 	 */
 	public void mainDirBtnClick() {
-		PcOpManager.openMainDir(context);
+		PcOpManager.openMainDir(context, false);
 	}
 
 	/**
@@ -309,15 +321,14 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 					currDir = currDir.substring(0, currDir.lastIndexOf("\\"));
 					PcOpManager.openDir(currDir, context);
 				} catch (Exception e) {
-					PcOpManager.openMainDir(context);
+					PcOpManager.openMainDir(context,false);
 				}
 				return;
 			}
-			
+			String path = pf.getString("path");
 			/*点击正常目录的时候*/
 			// 判断是否是文件夹
 			if (pf.getBoolean("dir")) {// 是文件夹
-				String path = pf.getString("path");
 				currDir = path;
 				PcOpManager.openDir(path, context);
 			} else {
@@ -325,7 +336,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 					PcOpManager.openDir(pf.getString("name"), context);
 					currDir = pf.getString("name");
 				} else {
-					
+					PcOpManager.openFile(context, path);//打开文件
 				}
 			}
 		} catch (JSONException e) {
@@ -338,8 +349,9 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		View view = LayoutInflater.from(context).inflate(
-				R.layout.view_file_item_logn_click, null);
+		final JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
+		
+		View view = LayoutInflater.from(context).inflate(R.layout.view_file_item_logn_click, null);
 		final Dialog dialog = new Dialog(context, R.style.no_title_dialog);
 		dialog.setContentView(view);
 		dialog.show();
@@ -354,7 +366,11 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				Toast.makeText(context, "此功能暂时未完成,敬请期待！", Toast.LENGTH_LONG).show();
+				try {
+					PcOpManager.openFile(context, pf.getString("path"));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -363,7 +379,33 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				Toast.makeText(context, "此功能暂时未完成,敬请期待！", Toast.LENGTH_LONG).show();
+				final Dialog askDialog = new Dialog(context, R.style.no_title_dialog);
+				View askView = LayoutInflater.from(context).inflate(R.layout.view_ask_del_file_op_dialog, null);
+				askDialog.setContentView(askView);
+				askDialog.show();
+				Button okBtn = (Button) askView.findViewById(R.id.okBtn); 
+				Button cancelBtn = (Button) askView.findViewById(R.id.cancelBtn); 
+				
+				okBtn.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						askDialog.cancel();
+						try {
+							PcOpManager.delFile(context, pf.getString("path"));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				
+				cancelBtn.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						askDialog.cancel();
+					}
+				});
+				
+				
 			}
 		});
 		
@@ -394,6 +436,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 			@Override
 			public void handleMessage(Message msg) {
+				pd.closePromptDialog();
 				List<DatagramPacket> pcs = (List<DatagramPacket>) msg.obj;
 				if (pcs.isEmpty()) {
 					Toast.makeText(context, "没有可以控制的电脑", Toast.LENGTH_LONG).show();
@@ -423,13 +466,15 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 				}
 			}
 		}).start();
+		
+		pd.showPromptDialog(R.string.please_wait);
 	}
 	
 	class MyBroadCastReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+			pd.closePromptDialog();
 			ReqReplyOp rro = (ReqReplyOp) intent.getSerializableExtra("rro");
 			short cmd = rro.getCmd();
 			switch (cmd) {
@@ -439,9 +484,28 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			case Head.OPEN_DIR_REPLY:
 				connServerReply(rro);
 				break;
+			case Head.DEL_FILE_REPLY:
+				connServerReply(rro);
+				break;
+			case Head.OPEN_FILE_REPLY:
+				showSuccess(rro);
+				break;
 
 			default:
 				break;
+			}
+		}
+
+		/**
+		 * 显示成功打开文件的信息
+		 * @param rro 
+		 */
+		private void showSuccess(ReqReplyOp rro) {
+			Log.i("receive", "播放文件返回" + rro.getContent());
+			if (rro.getContent().equals("true")) {
+				Toast.makeText(context, "播放成功!", Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(context, "播放失败，没有找到相应的音乐播放器!", Toast.LENGTH_LONG).show();
 			}
 		}
 

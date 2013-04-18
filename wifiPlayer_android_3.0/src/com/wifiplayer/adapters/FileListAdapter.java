@@ -81,14 +81,28 @@ public class FileListAdapter extends BaseAdapter {
 			size.setText(pf.getString("size"));
 			if (position == 0 && !pf.getBoolean("sys") ) {
 				iv.setImageResource(R.drawable.pre);
-				
 			} else {
 				if (pf.getBoolean("dir")) {
 					iv.setImageResource(R.drawable.dir);
 				} else {
-					iv.setImageResource(R.drawable.zip);
+					String suffix = getFileSuffix(pf.getString("path"));//文件后缀
+					if (suffix.toLowerCase().equals("mp3") || suffix.toLowerCase().equals("wma") || suffix.toLowerCase().equals("wav") || suffix.toLowerCase().equals("ape") || suffix.toLowerCase().equals("flac") || suffix.toLowerCase().equals("aac") || suffix.toLowerCase().equals("m4a") ) {//音乐文件
+						//音乐文件
+						iv.setImageResource(R.drawable.music);
+					} else if (suffix.toLowerCase().equals("mp4") || suffix.toLowerCase().equals("wmv") || suffix.toLowerCase().equals("rm") || suffix.toLowerCase().equals("rmvb") || suffix.toLowerCase().equals("mkv") || suffix.toLowerCase().equals("tp") || suffix.toLowerCase().equals("ts") || suffix.toLowerCase().equals("mov") || suffix.toLowerCase().equals("3gp") || suffix.toLowerCase().equals("avi")) {
+						//视频文件
+						iv.setImageResource(R.drawable.video);
+					} else if(suffix.toLowerCase().equals("zip")) {
+						//压缩文件
+						iv.setImageResource(R.drawable.zip);
+					} else if (suffix.toLowerCase().equals("png") || suffix.toLowerCase().equals("jpg") || suffix.toLowerCase().equals("jpeg") || suffix.toLowerCase().equals("gif") || suffix.toLowerCase().equals("bmp")) {
+						iv.setImageResource(R.drawable.pic);
+					} else {
+						iv.setImageResource(R.drawable.ask);
+					}
+					
 				}
-				date.setText("2013-04-14 11:11:12");
+				date.setText(pf.getString("createDate"));
 			}
 			
 		} catch (JSONException e) {
@@ -98,6 +112,14 @@ public class FileListAdapter extends BaseAdapter {
 		
 		
 		return convertView;
+	}
+	
+	/**
+	 * 获取文件的后罪名
+	 * @param path
+	 */
+	public String getFileSuffix(String path) {
+		return path.substring(path.lastIndexOf(".") + 1, path.length());
 	}
 
 }

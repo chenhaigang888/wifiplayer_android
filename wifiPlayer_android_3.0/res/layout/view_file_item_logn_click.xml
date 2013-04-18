@@ -2,8 +2,16 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@color/white"
+    android:background="@drawable/dialog_bg"
     android:orientation="vertical" >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_title"
+        android:gravity="center"
+        android:text="@string/file_op"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 	<Button 
 	    android:id="@+id/openFileButton"
 	    android:layout_width="fill_parent"

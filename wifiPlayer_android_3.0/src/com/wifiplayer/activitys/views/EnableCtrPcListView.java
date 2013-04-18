@@ -69,6 +69,6 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 		dialog.cancel();
 		DatagramPacket pc = (DatagramPacket) arg0.getAdapter().getItem(arg2);
 		ConnServer.conn(pc.getAddress(), context);
-		PcOpManager.openMainDir(context);
+		PcOpManager.openMainDir(context, true);
 	}
 }

@@ -18,10 +18,10 @@ import android.util.Log;
  * 
  */
 public class ReceiveThread extends Thread {
-
+ 
 	private Socket socket;
 	private Context context;
-	public static boolean isReceive = true;
+	boolean isReceive = true;
 
 	public ReceiveThread(Socket socket, Context context) {
 		super();
@@ -31,8 +31,9 @@ public class ReceiveThread extends Thread {
 
 	@Override
 	public void run() {
+		Log.i("receive", "线程中开始监听时socket:" + socket);
 		receive_();
-		Log.i("receive", "监听结束");
+		Log.i("receive", "Receive线程中监听结束");
 	}
 
 	/**
@@ -52,7 +53,6 @@ public class ReceiveThread extends Thread {
 	 */
 	private void connServerReply(byte[] bodyArray) {
 		String bodyStr = new String(bodyArray);
-		Log.i("receive", "接收到的内容：" + bodyStr);
 		ReqReplyOp rro = new ReqReplyOp();
 		rro.setCmd(Head.CONN_SERVER_REPLY);
 		rro.setContent(bodyStr);
@@ -67,8 +67,8 @@ public class ReceiveThread extends Thread {
 			is = s.getInputStream();
 			len = is.read(array, readPosition, array.length - readPosition);
 			if (len == -1) {
-				is.close();
-				s.close();
+//				ConnServer.close();
+				Log.i("receive", "Receive线程readData中Socket:" + s);
 				return len;
 			}
 			if ((len + readPosition) < array.length) {
@@ -76,13 +76,7 @@ public class ReceiveThread extends Thread {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			try {
-				is.close();
-				s.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//			ConnServer.close();
 			return -1;
 		}
 
@@ -114,6 +108,7 @@ public class ReceiveThread extends Thread {
 			case Head.DEL_FILE_REPLY:// 删除文件返回
 				break;
 			case Head.OPEN_FILE_REPLY:// 打开文件返回
+				openFileReply(bodyArray);
 				break;
 			case Head.OPEN_DIR_REPLY:// 打开文件夹返回
 				openDirReply(bodyArray);
@@ -123,6 +118,20 @@ public class ReceiveThread extends Thread {
 
 			}
 		}
+		
+	}
+
+	/**
+	 * 打开文件返回
+	 * @param bodyArray
+	 */
+	private void openFileReply(byte[] bodyArray) {
+		String bodyStr = new String(bodyArray);
+		ReqReplyOp rro = new ReqReplyOp();
+		rro.setCmd(Head.OPEN_FILE_REPLY);
+		rro.setContent(bodyStr);
+		rro.setStatus(0);
+		SendBroadCastUtil.sendBroadCast(context, rro);
 		
 	}
 }

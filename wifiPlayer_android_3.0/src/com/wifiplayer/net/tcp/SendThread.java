@@ -27,7 +27,9 @@ public class SendThread extends Thread {
 
 	@Override
 	public void run() {
-		send(sendData);
+		if (!socket.isClosed()) {
+			send(sendData);
+		}
 	}
 
 	/**
@@ -36,7 +38,6 @@ public class SendThread extends Thread {
 	 * @param packages
 	 */
 	private void send(byte[] sendData) {
-
 		OutputStream os = null;
 		try {
 			os = socket.getOutputStream();
