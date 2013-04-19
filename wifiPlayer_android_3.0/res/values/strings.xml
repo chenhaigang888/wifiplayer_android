@@ -26,9 +26,15 @@
     <string name="ask">提示</string>
     <string name="del_file_remark">确定要永久删除此文件？</string>
     <string name="del_file_ok">删除成功！</string>
+    <string name="del_file_err">删除文件失败</string>
     <string name="copy_file_dialog_title">文件拷贝</string>
     <string name="copying_file">正在拷贝文件："</string>
     <string name="copy_err">无法拷贝</string>
     <string name="del_err">删除失败</string>
+    <string name="already_2_main_dir">已到主目录</string>
+    <string name="play_succ">播放成功!</string>
+    <string name="play_fail">播放失败，没有找到相应的音乐播放器!</string>
+    <string name="no_pc_control">没有可以控制的电脑</string>
+    
 
 </resources>

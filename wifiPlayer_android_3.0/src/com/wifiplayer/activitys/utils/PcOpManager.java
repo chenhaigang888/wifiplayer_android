@@ -11,6 +11,7 @@ import com.wifiplayer.bean.packages.Head;
 import com.wifiplayer.bean.packages.Packages;
 import com.wifiplayer.bean.packages.send.OpenDirBody;
 import com.wifiplayer.net.tcp.ConnServer;
+import com.wifiplayer.net.udp.SearchPc;
 
 /**
  * 电脑操作管理
@@ -99,9 +100,13 @@ public class PcOpManager {
 	 * @param path
 	 */
 	public static void copyFile2Phone(Context context, String path) {
-		copyFileName = path.substring(path.lastIndexOf("\\") + 1, path.length());
+		if (SearchPc.os.equals("Mac OS X")) {
+			copyFileName = path.substring(path.lastIndexOf("/") + 1, path.length());
+		} else {
+			copyFileName = path.substring(path.lastIndexOf("\\") + 1, path.length());
+		}
+		
 		sendOpCMD(context, Head.COPY_FILE_2_PHONE, path);
-//		FunctionActivity.pd.showPromptDialog(R.string.please_wait);
 	}
 	
 	/**

@@ -4,6 +4,8 @@ package com.wifiplayer.adapters;
 import java.net.DatagramPacket;
 import java.util.List;
 
+import com.wifiplayer.bean.FindedPC;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +20,14 @@ import android.widget.TextView;
 public class EnableCtrlPCAdapter extends BaseAdapter {
 
 	private Context context;
-	List<DatagramPacket> pcs;
+	List<FindedPC> pcs;
 	int[] ints;
 	int resource;
 	
 	
 	
 
-	public EnableCtrlPCAdapter(Context context, List<DatagramPacket> pcs,
+	public EnableCtrlPCAdapter(Context context, List<FindedPC> pcs,
 			int[] ints, int resource) {
 		super();
 		this.context = context;
@@ -56,7 +58,14 @@ public class EnableCtrlPCAdapter extends BaseAdapter {
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 		View view = LayoutInflater.from(context).inflate(resource, null);
 		TextView name = (TextView) view.findViewById(ints[0]);
-		name.setText(pcs.get(arg0).getAddress() + "");
+		TextView osVision = (TextView) view.findViewById(ints[1]);
+		TextView addr = (TextView) view.findViewById(ints[2]);
+		
+		FindedPC fPC = pcs.get(arg0);
+		name.setText(fPC.getPcUser());//电脑名称
+		osVision.setText(fPC.getOsName() + "_" + fPC.getVersion());
+		addr.setText(fPC.getDatagramPacket().getAddress() + "");
+		
 		return view;
 	}
 

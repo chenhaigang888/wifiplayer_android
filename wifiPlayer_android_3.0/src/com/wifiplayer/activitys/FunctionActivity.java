@@ -15,6 +15,7 @@ import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.activitys.utils.PromptDialog;
 import com.wifiplayer.activitys.views.EnableCtrPcListView;
 import com.wifiplayer.adapters.FileListAdapter;
+import com.wifiplayer.bean.FindedPC;
 import com.wifiplayer.bean.ReqReplyOp;
 import com.wifiplayer.bean.myCtrlView.MyImageViewButton;
 import com.wifiplayer.bean.packages.Head;
@@ -332,10 +333,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		
-		openFile(arg0, arg1, arg2, arg3);
-		
-
+		openFile(arg0, arg1, arg2, arg3);//打开文件 
 	}
 
 	/**
@@ -352,16 +350,21 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			if (arg2 == 0 && !pf.getBoolean("sys")) {
 				try {
 					if (currDir == null) {
-						Toast.makeText(context, "已到主目录", Toast.LENGTH_LONG).show();
+						Toast.makeText(context, R.string.already_2_main_dir, Toast.LENGTH_LONG).show();
 						return;
 					}
-					currDir = currDir.substring(0, currDir.lastIndexOf("\\"));
+					if (SearchPc.os.equals("Mac OS X")) {
+						currDir = currDir.substring(0, currDir.lastIndexOf("/"));
+					} else {
+						currDir = currDir.substring(0, currDir.lastIndexOf("\\"));
+					}
 					PcOpManager.openDir(currDir, context);
 				} catch (Exception e) {
 					PcOpManager.openMainDir(context,false);
 				}
 				return;
 			}
+			
 			String path = pf.getString("path");
 			/*点击正常目录的时候*/
 			// 判断是否是文件夹
@@ -404,11 +407,6 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			public void onClick(View v) {
 				dialog.cancel();
 				openFile(arg0, arg1, arg2, arg3);
-//				try {
-//					PcOpManager.openFile(context, pf.getString("path"));
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
 			}
 		});
 
@@ -466,6 +464,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 						Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
 						return;
 					}
+					
 					if (pf.getBoolean("dir")) {
 						Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
 						return;
@@ -503,8 +502,6 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 							double totalD = new Double(total);
 							double currD = new Double(curr);
 							int p = (int)(currD/totalD * 100);
-							
-							
 							downProgressBar.setProgress(p);
 							
 							String totalUnit = String.format("%.2f", js(new Double(total))) + strKB[second];//文件总长度单位
@@ -559,9 +556,9 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			@Override
 			public void handleMessage(Message msg) {
 				pd.closePromptDialog();
-				List<DatagramPacket> pcs = (List<DatagramPacket>) msg.obj;
+				List<FindedPC> pcs = (List<FindedPC>) msg.obj;
 				if (pcs.isEmpty()) {
-					Toast.makeText(context, "没有可以控制的电脑", Toast.LENGTH_LONG).show();
+					Toast.makeText(context, R.string.no_pc_control, Toast.LENGTH_LONG).show();
 					return;
 				}
 				
@@ -579,7 +576,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			public void run() {
 				try {
 					SearchPc.connServer();
-					List<DatagramPacket> pcs = SearchPc.receive();
+					List<FindedPC> pcs = SearchPc.receive();
 					Message msg = new Message();
 					msg.obj = pcs;
 					msg.setTarget(searchHandler);
@@ -627,7 +624,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		 * @param rro
 		 */
 		private void delFileReply(ReqReplyOp rro) {
-			Toast.makeText(context, "删除文件失败", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.del_file_err, Toast.LENGTH_LONG).show();
 			
 		}
 
@@ -645,11 +642,10 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		 * @param rro 
 		 */
 		private void showSuccess(ReqReplyOp rro) {
-			Log.i("receive", "播放文件返回" + rro.getContent());
 			if (rro.getContent().equals("true")) {
-				Toast.makeText(context, "播放成功!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.play_succ, Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(context, "播放失败，没有找到相应的音乐播放器!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.play_fail, Toast.LENGTH_LONG).show();
 			}
 		}
 

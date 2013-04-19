@@ -6,6 +6,7 @@ import java.util.List;
 import com.wifiplayer.R;
 import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.adapters.EnableCtrlPCAdapter;
+import com.wifiplayer.bean.FindedPC;
 import com.wifiplayer.net.tcp.ConnServer;
 
 import android.app.Dialog;
@@ -26,10 +27,10 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 
 	private Context context;
 	private Dialog dialog;
-	private List<DatagramPacket> pcs;
+	private List<FindedPC> pcs;
 	
 	public EnableCtrPcListView(Context context, Dialog dialog,
-			List<DatagramPacket> pcs) {
+			List<FindedPC> pcs) {
 		super();
 		this.context = context;
 		this.dialog = dialog;
@@ -45,7 +46,7 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 		ListView lv = (ListView) view.findViewById(R.id.pcListListView);
 		Button btn = (Button) view.findViewById(R.id.cancelButton);
 		
-		EnableCtrlPCAdapter adapter = new EnableCtrlPCAdapter(context, pcs, new int[]{R.id.pcNameTextview}, R.layout.view_pc_list_item);
+		EnableCtrlPCAdapter adapter = new EnableCtrlPCAdapter(context, pcs, new int[]{R.id.pcNameTextview, R.id.pcOSVisionTextview, R.id.pcAddrTextview}, R.layout.view_pc_list_item);
 		lv.setAdapter(adapter);
 		
 		lv.setOnItemClickListener(this);
@@ -67,8 +68,8 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		dialog.cancel();
-		DatagramPacket pc = (DatagramPacket) arg0.getAdapter().getItem(arg2);
-		ConnServer.conn(pc.getAddress(), context);
+		FindedPC fPC = (FindedPC) arg0.getAdapter().getItem(arg2);
+		ConnServer.conn(fPC.getDatagramPacket().getAddress(), context);
 		PcOpManager.openMainDir(context, true);
 	}
 }
