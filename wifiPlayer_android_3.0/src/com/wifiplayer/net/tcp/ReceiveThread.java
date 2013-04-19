@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.wifiplayer.activitys.FunctionActivity;
 import com.wifiplayer.activitys.utils.PcOpManager;
@@ -16,7 +18,6 @@ import com.wifiplayer.bean.packages.Head;
 
 import android.content.Context;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
@@ -40,7 +41,6 @@ public class ReceiveThread extends Thread {
 
 	@Override
 	public void run() {
-		Log.i("receive", "线程中开始监听时socket:" + socket);
 		receive_();
 		Log.i("receive", "Receive线程中监听结束");
 	}
@@ -77,8 +77,6 @@ public class ReceiveThread extends Thread {
 			is = s.getInputStream();
 			len = is.read(array, readPosition, array.length - readPosition);
 			if (len == -1) {
-//				ConnServer.close();
-				Log.i("receive", "Receive线程readData中Socket:" + s);
 				return len;
 			}
 			if ((len + readPosition) < array.length) {
@@ -86,7 +84,6 @@ public class ReceiveThread extends Thread {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-//			ConnServer.close();
 			return -1;
 		}
 
@@ -101,7 +98,6 @@ public class ReceiveThread extends Thread {
 				isReceive = false;
 				break;
 			}
-			
 			Head head = Head.resolveHead(headArray);
 			
 			byte[] bodyArray = null;
@@ -114,6 +110,7 @@ public class ReceiveThread extends Thread {
 				copyFile2PhoneReply(head);
 				break;
 			case Head.DEL_FILE_REPLY:// 删除文件返回
+				delFileReply(bodyArray);
 				break;
 			case Head.OPEN_FILE_REPLY:// 打开文件返回
 				bodyArray = readBody(head);
@@ -132,6 +129,20 @@ public class ReceiveThread extends Thread {
 	}
 	
 	/**
+	 * 删除失败的时候返回的信息
+	 * @param bodyArray
+	 */
+	private void delFileReply(byte[] bodyArray) {
+		
+		String bodyStr = new String(bodyArray);
+		ReqReplyOp rro = new ReqReplyOp();
+		rro.setCmd(Head.DEL_FILE_REPLY);
+		rro.setContent(bodyStr);
+		rro.setStatus(1);
+		SendBroadCastUtil.sendBroadCast(context, rro);
+	}
+
+	/**
 	 * 将pc的文件拷贝到手机内
 	 * @param head
 	 */
@@ -148,37 +159,42 @@ public class ReceiveThread extends Thread {
 			
 			
 			InputStream is = socket.getInputStream();
-			byte[] buffer = new byte[1024];
+			byte[] buffer = new byte[1024*1024*10];
 			int len = 0;
 			long currReadLenth = 0; //已经读取的长度
 			while((len = is.read(buffer, 0, 1024)) != -1) {
 				currReadLenth += len;
 				raf.write(buffer, 0, len);
-				System.out.println("当前读取的文件的内容的长度：" + currReadLenth);
-//				downLoadHandler
 				HashMap<String, String> map = new HashMap<String, String>();
-				map.put("total", fileLenth/1024/1024 + "");
-				map.put("curr", currReadLenth/1024/1024 + "");
+				
+				map.put("total", fileLenth + "");
+				map.put("curr",  currReadLenth + "");
+				
 				
 				map.put("finish", "");
-				Message msg = new Message();
+				final Message msg = new Message();
 				
 				msg.setTarget(FunctionActivity.downLoadHandler);
 				
 				if (currReadLenth == fileLenth) {
-					map.put("total", fileLenth/1024/1024 + "");
-					map.put("curr", currReadLenth/1024/1024 + "");
-					
+					map.put("total", fileLenth + "");
+					map.put("curr",  currReadLenth + "");
 					map.put("finish", "finish");
-					
 					msg.obj = map;
 					msg.sendToTarget();
 					break;
 				}
-				
 				msg.obj = map;
-				msg.sendToTarget();
 				
+				Timer t = new Timer();
+				t.schedule(new TimerTask() {
+					
+					@Override
+					public void run() {
+						msg.sendToTarget();
+						
+					}
+				}, 500);
 			}
 			raf.close();
 			
@@ -222,5 +238,7 @@ public class ReceiveThread extends Thread {
 		SendBroadCastUtil.sendBroadCast(context, rro);
 		
 	}
+	
+	
 
 }

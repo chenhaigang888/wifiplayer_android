@@ -12,28 +12,97 @@
         android:text="@string/file_op"
         android:textColor="@color/white"
         android:textSize="20sp" />
-	<Button 
-	    android:id="@+id/openFileButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/open_file"/>
-	<Button 
-	    android:id="@+id/delFileButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/del_file"/>
-	<Button 
-	    android:id="@+id/cope2PhoneFileButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/cope_2_phone"/>
-	<Button 
-	    android:id="@+id/cancelButton"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    style="@style/item_long_click_view_btn"
-	    android:text="@string/cancel"/>
+     <LinearLayout
+        android:id="@+id/openFileButton"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/open_file" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/open_file"
+            android:textColor="@color/white" />
+    </LinearLayout>
+	
+     <LinearLayout
+        android:id="@+id/delFileButton"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/del" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/del_file"
+            android:textColor="@color/white" />
+    </LinearLayout>
+    
+     <LinearLayout
+        android:id="@+id/cope2PhoneFileButton"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/copy_2_phone" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/cope_2_phone"
+            android:textColor="@color/white" />
+    </LinearLayout>
+     
+     <LinearLayout
+        android:id="@+id/cancelButton"
+        style="@style/item_long_click_view_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/cancel_green" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/cancel"
+            android:textColor="@color/white" />
+    </LinearLayout>
+	
+	
 </LinearLayout>

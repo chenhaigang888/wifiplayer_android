@@ -2,6 +2,7 @@ package com.wifiplayer.activitys;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.wifiplayer.bean.myCtrlView.MyImageViewButton;
 import com.wifiplayer.bean.packages.Head;
 import com.wifiplayer.net.tcp.ConnServer;
 import com.wifiplayer.net.udp.SearchPc;
+import com.wifiplayer.utils.IPAddressTool;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -40,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -231,13 +234,28 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		
 		Button okBtn = (Button) view.findViewById(R.id.okButton);
 		Button cancelBtn = (Button) view.findViewById(R.id.cancelButton);
+		final EditText ipAddrEditText = (EditText) view.findViewById(R.id.ipAddrEditText);
 		
 		okBtn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				dialog.cancel();
 				
+				try {
+					String ipAddr = ipAddrEditText.getText().toString();
+					boolean isIP = IPAddressTool.isIPAdress(ipAddr);
+					
+					if (!isIP) {
+						Log.i("receive", "非法ip地址");
+						ipAddrEditText.setText("你输入的似乎不像是IP地址！");
+						return;
+					}
+					PcOpManager.connServer(ipAddrEditText.getText().toString(), context);
+					PcOpManager.openMainDir(context, false);
+					dialog.cancel();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -314,10 +332,23 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
 		
+		openFile(arg0, arg1, arg2, arg3);
+		
+
+	}
+
+	/**
+	 * 单击事件
+	 * @param arg0
+	 * @param arg1
+	 * @param arg2
+	 * @param arg3
+	 */
+	private void openFile(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		/*判断用户点击的是否为上一页选项*/
 		try {
+			JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
 			if (arg2 == 0 && !pf.getBoolean("sys")) {
 				try {
 					if (currDir == null) {
@@ -349,12 +380,12 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 	}
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
+	public boolean onItemLongClick(final AdapterView<?> arg0, final View arg1, final int arg2,
+			final long arg3) {
 		final JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
 		
 		View view = LayoutInflater.from(context).inflate(R.layout.view_file_item_logn_click, null);
@@ -362,21 +393,22 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		dialog.setContentView(view);
 		dialog.show();
 
-		Button openFileBtn = (Button) view.findViewById(R.id.openFileButton);//打开文件
-		Button delFileBtn = (Button) view.findViewById(R.id.delFileButton);//删除文件
-		Button cope2PhoneFileBtn = (Button) view.findViewById(R.id.cope2PhoneFileButton);//将文件拷贝到手机
-		Button cancelBtn = (Button) view.findViewById(R.id.cancelButton);//取消按钮
+		LinearLayout openFileBtn = (LinearLayout) view.findViewById(R.id.openFileButton);//打开文件
+		LinearLayout delFileBtn = (LinearLayout) view.findViewById(R.id.delFileButton);//删除文件
+		LinearLayout cope2PhoneFileBtn = (LinearLayout) view.findViewById(R.id.cope2PhoneFileButton);//将文件拷贝到手机
+		LinearLayout cancelBtn = (LinearLayout) view.findViewById(R.id.cancelButton);//取消按钮
 		
 		openFileBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				try {
-					PcOpManager.openFile(context, pf.getString("path"));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				openFile(arg0, arg1, arg2, arg3);
+//				try {
+//					PcOpManager.openFile(context, pf.getString("path"));
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
 			}
 		});
 
@@ -385,6 +417,15 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
+				try {
+					if (pf.getBoolean("sys")) {
+						Toast.makeText(context, R.string.del_err, Toast.LENGTH_LONG).show();
+						return;
+					}
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				final Dialog askDialog = new Dialog(context, R.style.no_title_dialog);
 				View askView = LayoutInflater.from(context).inflate(R.layout.view_ask_del_file_op_dialog, null);
 				askDialog.setContentView(askView);
@@ -421,7 +462,15 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			public void onClick(View v) {
 				dialog.cancel();
 				try {
-					
+					if (pf.getBoolean("sys")) {
+						Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
+						return;
+					}
+					if (pf.getBoolean("dir")) {
+						Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
+						return;
+					}
+				
 					final Dialog downLoadDialog = new Dialog(context, R.style.no_title_dialog);
 					View downLoadView = LayoutInflater.from(context).inflate(R.layout.copy_file_2_phone_process, null);
 					downLoadDialog.setContentView(downLoadView);
@@ -432,6 +481,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 					final TextView currentProgressTextView = (TextView) downLoadView.findViewById(R.id.currentProgressTextView);//当前下载d位置
 					final TextView totalProgressTextView = (TextView) downLoadView.findViewById(R.id.totalProgressTextView);//总共需要下载长度
 					final Button okBtn = (Button) downLoadView.findViewById(R.id.okBtn);
+					
+					downProgressBar.setMax(100);//设置progressBar的长度
 					
 					okBtn.setOnClickListener(new View.OnClickListener() {
 						
@@ -449,18 +500,36 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 							String total = map.get("total");//文件总长度
 							String curr = map.get("curr");//当前下载的长度
 							
+							double totalD = new Double(total);
+							double currD = new Double(curr);
+							int p = (int)(currD/totalD * 100);
+							
+							
+							downProgressBar.setProgress(p);
+							
+							String totalUnit = String.format("%.2f", js(new Double(total))) + strKB[second];//文件总长度单位
+							second = 0;
+							String currUnit = String.format("%.2f", js(new Double(curr))) + strKB[second];//当前下载的长度单位
+							second = 0;
+							
 							fileNameTextView.setText(getResources().getString(R.string.copying_file) + PcOpManager.copyFileName);
-							totalProgressTextView.setText(total + "MB");
-							currentProgressTextView.setText(curr + "MB");
+							totalProgressTextView.setText(totalUnit);
+							currentProgressTextView.setText(currUnit);
 							
-							
-							
-							downProgressBar.setMax(new Integer(total));//设置progressBar的长度
-							downProgressBar.setProgress(new Integer(curr));
 							if (total.equals(curr)) {
 								okBtn.setVisibility(View.VISIBLE);
 							}
 							super.handleMessage(msg);
+						}
+
+						/**
+						 * 字符串转成int
+						 * @param total
+						 * @return
+						 */
+						private int double2Int(String total) {
+							total = total.substring(0, total.indexOf("."));
+							return new Integer(total);
 						}
 					};
 					PcOpManager.copyFile2Phone(context, pf.getString("path"));
@@ -495,6 +564,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 					Toast.makeText(context, "没有可以控制的电脑", Toast.LENGTH_LONG).show();
 					return;
 				}
+				
 				Dialog dialog = new Dialog(context, R.style.no_title_dialog); 
 				View view = new EnableCtrPcListView(context, dialog, pcs).getView();
 				dialog.setContentView(view);
@@ -538,7 +608,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 				connServerReply(rro);
 				break;
 			case Head.DEL_FILE_REPLY:
-				connServerReply(rro);
+				delFileReply(rro);
 				break;
 			case Head.OPEN_FILE_REPLY:
 				showSuccess(rro);
@@ -550,6 +620,15 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			default:
 				break;
 			}
+		}
+
+		/**
+		 * 删除文件返回，不过此处是删除失败的信息，因为删除成功后直接返回了OPEN_DIR指令
+		 * @param rro
+		 */
+		private void delFileReply(ReqReplyOp rro) {
+			Toast.makeText(context, "删除文件失败", Toast.LENGTH_LONG).show();
+			
 		}
 
 		/**
@@ -590,12 +669,26 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 					msg.sendToTarget();
 				} catch (JSONException e) {
 					e.printStackTrace();
-				}
+				} 
 				
+			} else {
+				Toast.makeText(context, rro.getContent(), Toast.LENGTH_LONG).show();
 			}
 		}
 		
 	}
 	
+	double fileD;
+	String[] strKB = {"B","KB","MB","GB","TB","PB"};
+	 int second = 0;//计算单位换算了多少次
+	public double js(double fileLenth) {
+		if (fileLenth >= 1024) {
+			fileD = fileLenth/ 1024;
+			second ++;
+			js(fileD);
+		}
+		return fileD;
+		
+	}
 
 }

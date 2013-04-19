@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 import com.wifiplayer.activitys.utils.PcOpManager;
+import com.wifiplayer.activitys.utils.SendBroadCastUtil;
+import com.wifiplayer.bean.ReqReplyOp;
+import com.wifiplayer.bean.packages.Head;
 
 import android.content.Context;
 import android.os.Handler;
@@ -36,6 +39,7 @@ public class ConnServer {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
+					sendConnErr(context);
 					close();
 					System.out.println("连接服务器时候出错");
 				}
@@ -78,5 +82,13 @@ public class ConnServer {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private static void sendConnErr(Context context) {
+		ReqReplyOp rro = new ReqReplyOp();
+		rro.setStatus(1);
+		rro.setContent("连接超时");
+		rro.setCmd(Head.CONN_SERVER_REPLY);
+		SendBroadCastUtil.sendBroadCast(context, rro);
 	}
 }

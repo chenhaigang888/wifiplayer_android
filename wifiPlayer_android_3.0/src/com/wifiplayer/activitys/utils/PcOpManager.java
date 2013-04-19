@@ -1,7 +1,9 @@
 package com.wifiplayer.activitys.utils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import android.content.Context;
-import android.os.Handler;
 
 import com.wifiplayer.R;
 import com.wifiplayer.activitys.FunctionActivity;
@@ -18,6 +20,41 @@ import com.wifiplayer.net.tcp.ConnServer;
 public class PcOpManager { 
 	
 	public static String copyFileName = null;
+	
+	/**
+	 * 连接电脑
+	 * @param addr
+	 * @param context
+	 */
+	public static void connServer(InetAddress addr, Context context) {
+		ConnServer.conn(addr, context);
+	}
+	
+	/**
+	 * 连接电脑
+	 * @param addr
+	 * @param context
+	 * @throws UnknownHostException
+	 */
+	public static void connServer(final String addr, final Context context) throws UnknownHostException {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				InetAddress addrs;
+				try {
+					addrs = InetAddress.getByName(addr);
+					connServer(addrs, context);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
+		
+		
+	}
 
 	/**
 	 * 打开文件夹
@@ -62,7 +99,7 @@ public class PcOpManager {
 	 * @param path
 	 */
 	public static void copyFile2Phone(Context context, String path) {
-		copyFileName = path.substring(path.lastIndexOf("/") + 1, path.length());
+		copyFileName = path.substring(path.lastIndexOf("\\") + 1, path.length());
 		sendOpCMD(context, Head.COPY_FILE_2_PHONE, path);
 //		FunctionActivity.pd.showPromptDialog(R.string.please_wait);
 	}

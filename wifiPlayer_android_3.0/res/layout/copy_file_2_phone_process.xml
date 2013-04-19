@@ -48,7 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:textSize="15sp"
-            android:text="15MB"
             android:textColor="@color/white"/>
         <TextView 
             android:id="@+id/totalProgressTextView"
@@ -56,7 +55,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:textSize="15sp"
-            android:text="100MB"
             android:textColor="@color/white"/>
     </RelativeLayout>
 
