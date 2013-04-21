@@ -507,7 +507,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 							String totalUnit = String.format("%.2f", js(new Double(total))) + strKB[second];//文件总长度单位
 							second = 0;
 							String currUnit = String.format("%.2f", js(new Double(curr))) + strKB[second];//当前下载的长度单位
-							second = 0;
+							Log.i("receive", "currUnit:" + currUnit);
 							
 							fileNameTextView.setText(getResources().getString(R.string.copying_file) + PcOpManager.copyFileName);
 							totalProgressTextView.setText(totalUnit);
@@ -516,6 +516,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 							if (total.equals(curr)) {
 								okBtn.setVisibility(View.VISIBLE);
 							}
+							second = 0;
 							super.handleMessage(msg);
 						}
 

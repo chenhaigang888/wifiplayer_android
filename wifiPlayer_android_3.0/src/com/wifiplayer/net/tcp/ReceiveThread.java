@@ -28,7 +28,7 @@ import android.util.Log;
  * 
  */
 public class ReceiveThread extends Thread {
- 
+
 	private Socket socket;
 	private Context context;
 	boolean isReceive = true;
@@ -61,7 +61,7 @@ public class ReceiveThread extends Thread {
 	 * @param bodyArray
 	 */
 	private void connServerReply(byte[] bodyArray) {
-		
+
 		String bodyStr = new String(bodyArray);
 		ReqReplyOp rro = new ReqReplyOp();
 		rro.setCmd(Head.CONN_SERVER_REPLY);
@@ -99,7 +99,7 @@ public class ReceiveThread extends Thread {
 				break;
 			}
 			Head head = Head.resolveHead(headArray);
-			
+
 			byte[] bodyArray = null;
 			switch (head.getCmd()) {
 			case Head.CONN_SERVER_REPLY:// 连接服务器返回
@@ -125,15 +125,16 @@ public class ReceiveThread extends Thread {
 
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * 删除失败的时候返回的信息
+	 * 
 	 * @param bodyArray
 	 */
 	private void delFileReply(byte[] bodyArray) {
-		
+
 		String bodyStr = new String(bodyArray);
 		ReqReplyOp rro = new ReqReplyOp();
 		rro.setCmd(Head.DEL_FILE_REPLY);
@@ -142,68 +143,94 @@ public class ReceiveThread extends Thread {
 		SendBroadCastUtil.sendBroadCast(context, rro);
 	}
 
+	int sendSecond = 0;// 纪录更新pragressBar的次数
+	Timer t = null;
+	HashMap<String, String> map = null;
+	long currReadLenth = 0; // 已经读取的长度
+	Message msg = null;
+
 	/**
 	 * 将pc的文件拷贝到手机内
+	 * 
 	 * @param head
 	 */
 	private void copyFile2PhoneReply(Head head) {
-		File document = new File(Environment.getExternalStorageDirectory()+"/wifiPlayer/");
-		document.mkdirs();//创建文件夹
+		
+		File document = new File(Environment.getExternalStorageDirectory() + "/wifiPlayer/");
+		document.mkdirs();// 创建文件夹
+		map = new HashMap<String, String>();
 		try {
-			RandomAccessFile raf = new RandomAccessFile(document.getAbsolutePath() + "/" +PcOpManager.copyFileName, "rw");//"rw":以读写方式打开指定文件，不存在就创建新文件。
+			RandomAccessFile raf = new RandomAccessFile(document.getAbsolutePath() + "/" + PcOpManager.copyFileName, "rw");// "rw":以读写方式打开指定文件，不存在就创建新文件。
 			byte[] bodyArray = readBody(head);
-			long fileLenth = new Long(new String(bodyArray));
-			
-			raf.setLength(fileLenth);//设置需要下载的文件的大小
-			raf.seek(0);//设置从文件的什么位置开始写入
-			
-			
+			Log.i("receive", "String(bodyArray):" + new String(bodyArray));
+			final long fileLenth = new Long(new String(bodyArray));
+			raf.setLength(fileLenth);// 设置需要下载的文件的大小
+			raf.seek(0);// 设置从文件的什么位置开始写入
+			t = new Timer();
+
 			InputStream is = socket.getInputStream();
-			byte[] buffer = new byte[1024*1024*10];
+			byte[] buffer = new byte[1024 * 1024];
 			int len = 0;
-			long currReadLenth = 0; //已经读取的长度
-			while((len = is.read(buffer, 0, 1024)) != -1) {
+
+			while ((len = is.read(buffer, 0, buffer.length)) != -1) {
 				currReadLenth += len;
 				raf.write(buffer, 0, len);
-				HashMap<String, String> map = new HashMap<String, String>();
-				
-				map.put("total", fileLenth + "");
-				map.put("curr",  currReadLenth + "");
-				
-				
-				map.put("finish", "");
-				final Message msg = new Message();
-				
-				msg.setTarget(FunctionActivity.downLoadHandler);
-				
+
 				if (currReadLenth == fileLenth) {
+					msg = new Message();
+					msg.setTarget(FunctionActivity.downLoadHandler);
+//					map = new HashMap<String, String>();
 					map.put("total", fileLenth + "");
-					map.put("curr",  currReadLenth + "");
+					map.put("curr", fileLenth + "");
 					map.put("finish", "finish");
 					msg.obj = map;
 					msg.sendToTarget();
+					map = null;
+					t = null;
+					currReadLenth = 0;
 					break;
-				}
-				msg.obj = map;
-				
-				Timer t = new Timer();
-				t.schedule(new TimerTask() {
-					
-					@Override
-					public void run() {
-						msg.sendToTarget();
-						
+				} else {
+					if (t != null) {
+						t.schedule(new TimerTask() {
+
+							@Override
+							public void run() {
+//								map = new HashMap<String, String>();
+								if (map != null) {
+									map.put("total", fileLenth + "");
+									map.put("curr", currReadLenth + "");
+									map.put("finish", "");
+
+									msg = new Message();
+									msg.setTarget(FunctionActivity.downLoadHandler);
+									msg.obj = map;
+									msg.sendToTarget();
+									sendSecond++;
+									if (sendSecond == 1000) {
+										sendSecond = 0;
+										System.gc();
+									}
+//									map = null;
+									msg = null;
+								}
+								
+							}
+						}, 1000);
 					}
-				}, 500);
+					
+				}
+
+				
 			}
 			raf.close();
-			
+//			t = null;
+			msg = null;
 			ReqReplyOp rro = new ReqReplyOp();
 			rro.setCmd(Head.COPY_FILE_2_PHONE_REPLY);
 			rro.setContent("下载完成!");
 			rro.setStatus(0);
 			SendBroadCastUtil.sendBroadCast(context, rro);
-			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -211,6 +238,7 @@ public class ReceiveThread extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 
 	private byte[] readBody(Head head) {
@@ -222,11 +250,10 @@ public class ReceiveThread extends Thread {
 		}
 		return bodyArray;
 	}
-	
-	
 
 	/**
 	 * 打开文件返回
+	 * 
 	 * @param bodyArray
 	 */
 	private void openFileReply(byte[] bodyArray) {
@@ -236,9 +263,7 @@ public class ReceiveThread extends Thread {
 		rro.setContent(bodyStr);
 		rro.setStatus(0);
 		SendBroadCastUtil.sendBroadCast(context, rro);
-		
+
 	}
-	
-	
 
 }
