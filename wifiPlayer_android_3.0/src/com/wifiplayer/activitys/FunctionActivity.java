@@ -20,8 +20,11 @@ import com.wifiplayer.bean.ReqReplyOp;
 import com.wifiplayer.bean.myCtrlView.MyImageViewButton;
 import com.wifiplayer.bean.packages.Head;
 import com.wifiplayer.net.tcp.ConnServer;
+import com.wifiplayer.net.tcp.server.ServerManager;
 import com.wifiplayer.net.udp.SearchPc;
+import com.wifiplayer.net.udp.UdpServer;
 import com.wifiplayer.utils.IPAddressTool;
+import com.wifiplayer.utils.ReadDirectoryFile;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -112,6 +115,17 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 		br = new MyBroadCastReceiver();
 		registerBroadCastReceiver(br);
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				ServerManager sm = new ServerManager();
+				sm.startServer();
+				new UdpServer().start();
+				
+			}
+		}).start();
 	}
 	
 	@Override
@@ -275,7 +289,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	 * 推荐软件按钮点击事件
 	 */
 	private void recommendBtnClick() {
-		// TODO Auto-generated method stub
+		ReadDirectoryFile.listFile("/mnt/sdcard/");
 
 	}
 
@@ -347,6 +361,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		/*判断用户点击的是否为上一页选项*/
 		try {
 			JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
+			Log.i("chg", "pf:" + pf);
+
 			if (arg2 == 0 && !pf.getBoolean("sys")) {
 				try {
 					if (currDir == null) {
@@ -354,6 +370,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 						return;
 					}
 					if (SearchPc.os.equals("Mac OS X")) {
+						currDir = currDir.substring(0, currDir.lastIndexOf("/"));
+					} else if(SearchPc.os.equals("android")) {
 						currDir = currDir.substring(0, currDir.lastIndexOf("/"));
 					} else {
 						currDir = currDir.substring(0, currDir.lastIndexOf("\\"));
@@ -460,9 +478,11 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			public void onClick(View v) {
 				dialog.cancel();
 				try {
-					if (pf.getBoolean("sys")) {
-						Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
-						return;
+					if (!SearchPc.os.equals("android")) {
+						if (pf.getBoolean("sys")) {
+							Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
+							return;
+						}
 					}
 					
 					if (pf.getBoolean("dir")) {

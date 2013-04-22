@@ -102,9 +102,12 @@ public class PcOpManager {
 	public static void copyFile2Phone(Context context, String path) {
 		if (SearchPc.os.equals("Mac OS X")) {
 			copyFileName = path.substring(path.lastIndexOf("/") + 1, path.length());
+		} else if (SearchPc.os.equals("android")) {
+			copyFileName = path.substring(path.lastIndexOf("/") + 1, path.length());
 		} else {
 			copyFileName = path.substring(path.lastIndexOf("\\") + 1, path.length());
 		}
+		System.out.println("copyFileName=========" + copyFileName);
 		
 		sendOpCMD(context, Head.COPY_FILE_2_PHONE, path);
 	}

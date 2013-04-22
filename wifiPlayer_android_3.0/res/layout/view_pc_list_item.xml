@@ -21,10 +21,11 @@
             android:id="@+id/pcNameTextview"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="1dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="2dp"
             android:lines="1"
+            android:textSize="10sp"
             android:textColor="@color/white" />
 
         <LinearLayout
@@ -39,8 +40,9 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="2dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="1dp"
                 android:lines="1"
+                android:textSize="10sp"
                 android:gravity="left"
                 android:textColor="@color/white" />
 
@@ -50,9 +52,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="1dp"
                 android:layout_marginRight="10dp"
                 android:lines="1"
+                android:textSize="10sp"
                 android:gravity="right"
                 android:textColor="@color/white" />
         </LinearLayout>

@@ -25,7 +25,7 @@ public class SearchPc {
 		ds = new DatagramSocket(); 
 		String sendStr = "Hello! I'm Client";
 		byte[] sendBuf = sendStr.getBytes();
-		InetAddress addr = InetAddress.getByName("192.168.1.106");
+		InetAddress addr = InetAddress.getByName("192.168.1.255");
 		int port = 9527;
 		DatagramPacket sendDp = new DatagramPacket(sendBuf, sendBuf.length, addr, port);
 		ds.send(sendDp);
@@ -43,6 +43,7 @@ public class SearchPc {
 		try {
 			ds.setSoTimeout(3000);
 			ds.receive(recvDp);
+			
 			recvStr = new String(recvDp.getData(), 0, recvDp.getLength());
 			Log.i("receive", "接收到的内容：" + recvStr);
 			String[] propers = recvStr.split("&");

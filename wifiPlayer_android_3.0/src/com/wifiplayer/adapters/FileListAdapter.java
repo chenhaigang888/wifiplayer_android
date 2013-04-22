@@ -6,8 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.wifiplayer.R;
+import com.wifiplayer.net.udp.SearchPc;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +81,9 @@ public class FileListAdapter extends BaseAdapter {
 			pf = (JSONObject) files.get(position);
 			nameTv.setText(pf.getString("name"));
 			size.setText(pf.getString("size"));
-			if (position == 0 && !pf.getBoolean("sys") ) {
+			Log.i("receive", "pf.getBoolean(\"sys\"):" + pf.getBoolean("sys"));
+
+			if (position == 0 && !pf.getBoolean("sys")) {
 				iv.setImageResource(R.drawable.pre);
 			} else {
 				if (pf.getBoolean("dir")) {

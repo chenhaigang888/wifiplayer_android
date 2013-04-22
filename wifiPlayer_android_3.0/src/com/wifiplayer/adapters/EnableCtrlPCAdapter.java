@@ -1,7 +1,6 @@
 
 package com.wifiplayer.adapters;
 
-import java.net.DatagramPacket;
 import java.util.List;
 
 import com.wifiplayer.bean.FindedPC;

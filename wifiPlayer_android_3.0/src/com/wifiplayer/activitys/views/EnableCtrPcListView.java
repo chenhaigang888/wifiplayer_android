@@ -1,6 +1,5 @@
 package com.wifiplayer.activitys.views;
 
-import java.net.DatagramPacket;
 import java.util.List;
 
 import com.wifiplayer.R;
