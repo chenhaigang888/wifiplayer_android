@@ -33,7 +33,7 @@
         <!-- 窗口是否为半透明 -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowBackground">@drawable/dialog_bg</item>
+        <item name="android:windowBackground">@drawable/dialog_bg_wifiplayer</item>
     </style>
     
          <!-- 没有title没有背景图片的Dialog -->

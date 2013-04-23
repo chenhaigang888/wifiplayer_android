@@ -45,7 +45,7 @@ public class EnableCtrPcListView implements View.OnClickListener, OnItemClickLis
 		ListView lv = (ListView) view.findViewById(R.id.pcListListView);
 		Button btn = (Button) view.findViewById(R.id.cancelButton);
 		
-		EnableCtrlPCAdapter adapter = new EnableCtrlPCAdapter(context, pcs, new int[]{R.id.pcNameTextview, R.id.pcOSVisionTextview, R.id.pcAddrTextview}, R.layout.view_pc_list_item);
+		EnableCtrlPCAdapter adapter = new EnableCtrlPCAdapter(context, pcs, new int[]{R.id.pcNameTextview, R.id.pcOSVisionTextview, R.id.pcAddrTextview, R.id.pcImgImageView}, R.layout.view_pc_list_item);
 		lv.setAdapter(adapter);
 		
 		lv.setOnItemClickListener(this);

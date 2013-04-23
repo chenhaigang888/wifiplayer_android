@@ -185,7 +185,7 @@ public class ReceiveThread extends Thread {
 					map.put("finish", "finish");
 					msg.obj = map;
 					msg.sendToTarget();
-					map = null;
+//					map = null;
 					t = null;
 					currReadLenth = 0;
 					break;
@@ -225,6 +225,7 @@ public class ReceiveThread extends Thread {
 			raf.close();
 //			t = null;
 			msg = null;
+			map = null;
 			ReqReplyOp rro = new ReqReplyOp();
 			rro.setCmd(Head.COPY_FILE_2_PHONE_REPLY);
 			rro.setContent("下载完成!");

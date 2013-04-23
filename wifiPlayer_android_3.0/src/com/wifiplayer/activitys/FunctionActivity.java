@@ -1,8 +1,8 @@
 package com.wifiplayer.activitys;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,7 +32,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -77,6 +76,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	
 	public static Handler downLoadHandler = null;
 
+
 	Handler fileHandler = new Handler() {
 
 		@Override
@@ -101,14 +101,40 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_function);
 		
+	
+		
 		pd = new PromptDialog(context);
 		init();// 初始化控件
 		// loadData();// 初始化数据
 		/* 设置按钮监听事件 */
-		shareBtn.setOnClickListener(this);
-		recommendBtn.setOnClickListener(this);
-		connPCBtn.setOnClickListener(this);
-		mainDirBtn.setOnClickListener(this);
+		shareBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				shareBtnClick();
+			}
+		});
+		recommendBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				recommendBtnClick();
+			}
+		});
+		connPCBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				connPCBtnClick();
+			}
+		});
+		mainDirBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mainDirBtnClick();
+			}
+		});
 
 		dirLv.setOnItemClickListener(this);
 		dirLv.setOnItemLongClickListener(this);
@@ -166,24 +192,24 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		int id = v.getId();
-		switch (id) {
-		case R.id.shareButton:
-			shareBtnClick();
-			break;
-		case R.id.recommendButton:
-			recommendBtnClick();
-			break;
-		case R.id.connPCButton:
-			connPCBtnClick();
-			break;
-		case R.id.mainDirButton:
-			mainDirBtnClick();
-			break;
-
-		default:
-			break;
-		}
+//		int id = v.getId();
+//		switch (id) {
+//		case R.id.shareButton:
+//			shareBtnClick();
+//			break;
+//		case R.id.recommendButton:
+//			recommendBtnClick();
+//			break;
+//		case R.id.connPCButton:
+//			connPCBtnClick();
+//			break;
+//		case R.id.mainDirButton:
+//			mainDirBtnClick();
+//			break;
+//
+//		default:
+//			break;
+//		}
 	}
 
 	/**
@@ -707,5 +733,6 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		return fileD;
 		
 	}
+	
 
 }
