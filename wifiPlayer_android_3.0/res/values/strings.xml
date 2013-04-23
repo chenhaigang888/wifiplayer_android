@@ -35,6 +35,8 @@
     <string name="play_succ">播放成功!</string>
     <string name="play_fail">播放失败，没有找到相应的音乐播放器!</string>
     <string name="no_pc_control">没有可以控制的电脑</string>
+    <string name="share_content">我正在使用wifiPlayer,非常不错的一款软件</string>
+    <string name="share">分享</string>
     
     <!-- 新浪微博 -->
     <string name="menu_settings">Settings</string>

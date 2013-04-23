@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="libs/gson-2.2.2-javadoc.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.2.2-sources.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="libs/weibo.sdk.android.sso.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

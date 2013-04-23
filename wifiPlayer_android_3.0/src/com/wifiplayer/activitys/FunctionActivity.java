@@ -10,10 +10,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.weibo.sdk.android.Oauth2AccessToken;
+import com.weibo.sdk.android.Weibo;
+import com.weibo.sdk.android.WeiboAuthListener;
+import com.weibo.sdk.android.WeiboDialogError;
+import com.weibo.sdk.android.WeiboException;
+import com.weibo.sdk.android.api.StatusesAPI;
+import com.weibo.sdk.android.net.RequestListener;
+
 import com.wifiplayer.R;
 import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.activitys.utils.PromptDialog;
+import com.wifiplayer.activitys.utils.SendBroadCastUtil;
 import com.wifiplayer.activitys.views.EnableCtrPcListView;
+import com.wifiplayer.activitys.views.Share2WeiBoView;
 import com.wifiplayer.adapters.FileListAdapter;
 import com.wifiplayer.bean.FindedPC;
 import com.wifiplayer.bean.ReqReplyOp;
@@ -23,6 +33,7 @@ import com.wifiplayer.net.tcp.ConnServer;
 import com.wifiplayer.net.tcp.server.ServerManager;
 import com.wifiplayer.net.udp.SearchPc;
 import com.wifiplayer.net.udp.UdpServer;
+import com.wifiplayer.utils.AccessTokenKeeper;
 import com.wifiplayer.utils.IPAddressTool;
 import com.wifiplayer.utils.ReadDirectoryFile;
 
@@ -75,7 +86,11 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	public static String currDir = null;
 	
 	public static Handler downLoadHandler = null;
-
+	
+	private Weibo mWeiBo;//sina微博
+	public static Oauth2AccessToken accessToken;
+	public static final short SINA_WEIBO_SHARE_SUCC = 0x2000;//新浪微博分享成功
+	public static final short SINA_WEIBO_SHARE_FAIL = 0x2001;//新浪微博分享失败
 
 	Handler fileHandler = new Handler() {
 
@@ -91,7 +106,6 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 							R.id.fileSizeTextView, R.id.fileCreateDateTextView });
 			dirLv.setAdapter(adapter);
 		}
-
 	};
 
 	@Override
@@ -101,7 +115,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_function);
 		
-	
+		accessToken = AccessTokenKeeper.readAccessToken(this);
 		
 		pd = new PromptDialog(context);
 		init();// 初始化控件
@@ -335,10 +349,21 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		
 		sinaWeiBoShareBtn.setOnClickListener(new View.OnClickListener() {
 			
+			
+
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
 				
+				if (accessToken != null) {
+					Dialog share_dialog = new Dialog(context, R.style.no_title_dialog);
+					View view = new Share2WeiBoView(context, share_dialog).getView();
+					share_dialog.setContentView(view);
+					share_dialog.show();
+				} else {
+					mWeiBo = Weibo.getInstance("308491239", "http://www.xn--yeto9bx06i.com");
+					mWeiBo.authorize(context, new AuthDialogListener());
+				}
 			}
 		});
 		
@@ -356,7 +381,13 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				
+				Intent i = new Intent(Intent.ACTION_SEND); 
+//            	i.setType("text/plain"); //模拟器请使用这行
+            	i.setType("message/rfc822") ; // 真机上使用这行
+//            	i.putExtra(Intent.EXTRA_EMAIL, new String[]{"chg4951674@163.com"}); 
+            	i.putExtra(Intent.EXTRA_SUBJECT,"wifiPlayer电脑端！"); 
+            	i.putExtra(Intent.EXTRA_TEXT,"我要获得wifiPlayer电脑端！"); 
+            	context.startActivity(Intent.createChooser(i, "Select email application."));
 			}
 		});
 		
@@ -660,7 +691,12 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			case Head.COPY_FILE_2_PHONE_REPLY:
 				copyFileReply(rro);
 				break;
-
+			case SINA_WEIBO_SHARE_SUCC:
+				Toast.makeText(context, "分享成功！", Toast.LENGTH_LONG).show();
+				break;
+			case SINA_WEIBO_SHARE_FAIL:
+				Toast.makeText(context, "分享失败！", Toast.LENGTH_LONG).show();
+				break;
 			default:
 				break;
 			}
@@ -733,6 +769,95 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		return fileD;
 		
 	}
-	
+	/**
+	 * 新浪微博认证
+	 * @author Administrator
+	 *
+	 */
+	class AuthDialogListener implements WeiboAuthListener {
+
+        @Override
+        public void onComplete(Bundle values) {
+            String token = values.getString("access_token");
+            String expires_in = values.getString("expires_in");
+            accessToken = new Oauth2AccessToken(token, expires_in);
+            if (accessToken.isSessionValid()) {
+                String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new java.util.Date(accessToken.getExpiresTime()));
+//                mText.setText("认证成功: \r\n access_token: " + token + "\r\n" + "expires_in: " + expires_in + "\r\n有效期：" + date);
+                try {
+                    Class sso = Class
+                            .forName("com.weibo.sdk.android.api.WeiboAPI");// 如果支持weiboapi的话，显示api功能演示入口按钮
+                } catch (ClassNotFoundException e) {
+                    // e.printStackTrace();
+//                    Log.i(TAG, "com.weibo.sdk.android.api.WeiboAPI not found");
+                }
+//                cancelBtn.setVisibility(View.VISIBLE);
+                AccessTokenKeeper.keepAccessToken(context, accessToken);
+                Toast.makeText(context, "认证成功", Toast.LENGTH_SHORT).show();
+
+                try {
+					share2weibo("认证地方发送");
+				} catch (WeiboException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }
+        
+        
+
+        @Override
+        public void onError(WeiboDialogError e) {
+            Toast.makeText(getApplicationContext(),  "Auth error : " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onCancel() {
+            Toast.makeText(getApplicationContext(), "Auth cancel", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onWeiboException(WeiboException e) {
+            Toast.makeText(getApplicationContext(),  "Auth exception : " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
+	/**
+	 * 分享到新浪微博
+	 * @param content
+	 * @param picPath
+	 * @throws WeiboException
+	 */
+	public void share2weibo(String content) throws WeiboException {
+    	StatusesAPI sapi = new StatusesAPI(accessToken);
+    	
+    	sapi.update(content, null, null, new RequestListener() {
+			
+			@Override
+			public void onIOException(IOException arg0) {
+				System.out.println("----------IOException-----------" + arg0.getStackTrace());
+				ReqReplyOp rro = new ReqReplyOp();
+				rro.setCmd(SINA_WEIBO_SHARE_FAIL);
+				SendBroadCastUtil.sendBroadCast(context, rro);
+			}
+			
+			@Override
+			public void onError(WeiboException arg0) {
+				System.out.println("----------WeiboException-----------" + arg0.getStatusCode());
+				ReqReplyOp rro = new ReqReplyOp();
+				rro.setCmd(SINA_WEIBO_SHARE_FAIL);
+				SendBroadCastUtil.sendBroadCast(context, rro);
+			}
+			
+			@Override
+			public void onComplete(String arg0) {
+				Log.i("receive", "新浪微博分享成功");
+				ReqReplyOp rro = new ReqReplyOp();
+				rro.setCmd(SINA_WEIBO_SHARE_SUCC);
+				SendBroadCastUtil.sendBroadCast(context, rro);
+			}
+		});
+		
+    }
 
 }

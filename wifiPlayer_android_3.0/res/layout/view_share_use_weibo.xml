@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btnAreaLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@drawable/dialog_bg_wifiplayer"
+    android:orientation="vertical" >
+<TextView 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@drawable/dialog_title"
+    android:textColor="@color/white"
+    android:textSize="20sp"
+    android:text="@string/share"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15sp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
+        android:orientation="horizontal" >
+      
+        <EditText 
+            android:id="@+id/shareEditText"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:lines="7"
+            android:textColor="@color/white"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:gravity="top"
+            android:background="@drawable/ip_edittext"
+            android:text="@string/share_content"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg"
+            android:textColor="@color/white"
+            android:text="@string/ok" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg"
+            android:textColor="@color/white"
+            android:text="@string/cancel" 
+            android:layout_marginLeft="20dp"/>
+    </LinearLayout>
+
+</LinearLayout>
