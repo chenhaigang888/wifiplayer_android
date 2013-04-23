@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import com.wifiplayer.activitys.FunctionActivity;
 import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.activitys.utils.SendBroadCastUtil;
+import com.wifiplayer.activitys.views.FileOpView;
 import com.wifiplayer.bean.ReqReplyOp;
 import com.wifiplayer.bean.packages.Head;
 
@@ -178,7 +179,7 @@ public class ReceiveThread extends Thread {
 
 				if (currReadLenth == fileLenth) {
 					msg = new Message();
-					msg.setTarget(FunctionActivity.downLoadHandler);
+					msg.setTarget(FileOpView.downLoadHandler);
 //					map = new HashMap<String, String>();
 					map.put("total", fileLenth + "");
 					map.put("curr", fileLenth + "");
@@ -202,7 +203,7 @@ public class ReceiveThread extends Thread {
 									map.put("finish", "");
 
 									msg = new Message();
-									msg.setTarget(FunctionActivity.downLoadHandler);
+									msg.setTarget(FileOpView.downLoadHandler);
 									msg.obj = map;
 									msg.sendToTarget();
 									sendSecond++;

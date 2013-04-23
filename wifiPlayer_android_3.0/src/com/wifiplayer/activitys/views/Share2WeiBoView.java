@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * 可以控制的pc视图
+ * 新浪微博分享
  * @author Administrator
  *
  */
@@ -55,7 +55,6 @@ public class Share2WeiBoView implements View.OnClickListener{
 			try {
 				fa.share2weibo(shareEditText.getText().toString());
 			} catch (WeiboException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;

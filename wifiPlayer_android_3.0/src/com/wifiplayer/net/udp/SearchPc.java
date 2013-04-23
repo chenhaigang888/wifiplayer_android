@@ -20,12 +20,12 @@ public class SearchPc {
 	public static String os = null;
 	static DatagramSocket ds;
 	public static List<FindedPC> pcs = null;
-	public static void connServer() throws IOException {
+	public static void connServer(String ipAddr) throws IOException {
 		pcs = new ArrayList<FindedPC> ();
 		ds = new DatagramSocket(); 
 		String sendStr = "Hello! I'm Client";
 		byte[] sendBuf = sendStr.getBytes();
-		InetAddress addr = InetAddress.getByName("192.168.1.255");
+		InetAddress addr = InetAddress.getByName(ipAddr);
 		int port = 9527;
 		DatagramPacket sendDp = new DatagramPacket(sendBuf, sendBuf.length, addr, port);
 		ds.send(sendDp);

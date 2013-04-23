@@ -37,6 +37,10 @@
     <string name="no_pc_control">没有可以控制的电脑</string>
     <string name="share_content">我正在使用wifiPlayer,非常不错的一款软件</string>
     <string name="share">分享</string>
+    <string name="share_succ">分享成功！</string>
+    <string name="share_fail">分享失败！</string>
+    <string name="ip_err">你输入的似乎不像是IP地址！</string>
+    <string name="a_succ">授权成功!"</string>
     
     <!-- 新浪微博 -->
     <string name="menu_settings">Settings</string>
@@ -59,6 +63,34 @@
       <string name="weibosdk_forward">转发</string>
        <string name="weibosdk_fav">收藏</string>
        <string name="testcontent"></string>
+       
+       <!-- 腾讯微博 -->
+	<string name="textIntro">请选择授权方式：</string>
+
+    <string name="btnOAuthV1">OAuthV1授权（webview）</string>
+    <string name="btnOAuthV1Helper">OAuthV1授权（Helper）</string>
+    <string name="btnOAuthV2ImplicitGrant">OAuthV2ImplicitGrant授权（webview）</string>
+    
+    <string name="btnRequest">获取Request_token</string>
+    <string name="btnAuthorize">用WebView请求用户授权</string>
+    <string name="btnAccess">获取Access_token</string>
+    <string name="btnAPItest">微博API测试</string>
+    <string name="textRequest">获取到的Request_token：</string>
+    <string name="textVerifier">验证码：</string>
+    <string name="textAccess">获取到的Access_token：</string>
+    
+    
+    <string name="btnGetUsrInfo">获取用户信息</string>
+    <string name="btnSendMsg">发送文字微博</string>
+    <string name="btnSendMsgWithPic">发送带图的文字微博</string>
+    <string name="textResponse">返回信息：</string>
+    
+    <string name="btnImplicitGrant">授权</string>
+    <string name="send_tx_wei_bo_dialog_title">分享</string>
+    <string name="send_tx_wei_bo_dialog_content_textview">内容：</string>
+    <string name="send_tx_weibo_button">发送</string>
+    <string name="cancle_send_tx_weibo_button">取消</string>
+    <string name="sina_wei_bo_content">TODO</string>
     
 
 </resources>

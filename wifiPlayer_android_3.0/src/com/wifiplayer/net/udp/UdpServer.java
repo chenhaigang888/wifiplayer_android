@@ -10,7 +10,6 @@ import java.net.InetAddress;
 import android.os.Build;
 import android.util.Log;
 
-
 /**
  * UDP服务器 用户客户端寻找Server使用
  * @author Administrator
@@ -26,7 +25,6 @@ public class UdpServer extends Thread{
 		byte[] receBuf = new byte[100];
 		ds = new DatagramSocket(PORT);//UDPsocket
 		recevDp = new DatagramPacket(receBuf, receBuf.length);
-		
 		startReceive();
 		
 	}
@@ -59,7 +57,6 @@ public class UdpServer extends Thread{
 			ds.close();
 			startUdpServer();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}//启动监听
 		
@@ -90,13 +87,8 @@ public class UdpServer extends Thread{
 	    }  
 	    version[1] = Build.VERSION.RELEASE;// firmware version  
 	    version[2]=Build.MODEL;//model  
-	    
 	    version[3]="android";//system version  
-	    
-	    
 	    return version;  
-
 	} 
-	
 	
 }

@@ -47,14 +47,10 @@ public class PcOpManager {
 					addrs = InetAddress.getByName(addr);
 					connServer(addrs, context);
 				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			}
 		}).start();
-		
-		
 	}
 
 	/**
@@ -107,8 +103,6 @@ public class PcOpManager {
 		} else {
 			copyFileName = path.substring(path.lastIndexOf("\\") + 1, path.length());
 		}
-		System.out.println("copyFileName=========" + copyFileName);
-		
 		sendOpCMD(context, Head.COPY_FILE_2_PHONE, path);
 	}
 	
