@@ -13,6 +13,7 @@ import com.wifiplayer.utils.Tools;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -47,6 +48,8 @@ public class FileOpView {
 		this.pf = pf;
 		this.arg0 = arg0;
 		this.arg2 = arg2;
+		MediaPlayer mp = new MediaPlayer();
+		
 	}
 
 
@@ -77,7 +80,6 @@ public class FileOpView {
 						return;
 					}
 				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				final Dialog askDialog = new Dialog(context, R.style.no_title_dialog);
@@ -105,8 +107,6 @@ public class FileOpView {
 						askDialog.cancel();
 					}
 				});
-				
-				
 			}
 		});
 		
@@ -140,7 +140,6 @@ public class FileOpView {
 					final TextView totalProgressTextView = (TextView) downLoadView.findViewById(R.id.totalProgressTextView);//总共需要下载长度
 					final Button okBtn = (Button) downLoadView.findViewById(R.id.okBtn);
 					downProgressBar.setMax(100);//设置progressBar的长度
-					
 					okBtn.setOnClickListener(new View.OnClickListener() {
 						
 						@Override
@@ -153,23 +152,20 @@ public class FileOpView {
 						
 						@Override
 						public void handleMessage(Message msg) {
-							HashMap<String,String> map = (HashMap<String, String>) msg.obj;
-							String total = map.get("total");//文件总长度
-							String curr = map.get("curr");//当前下载的长度
+							HashMap<String,Object> map = (HashMap<String, Object>) msg.obj;
+							long total =  (Long) map.get("total");//文件总长度
+							long curr =  (Long) map.get("curr");//当前下载的长度
 							
-							double totalD = new Double(total);
-							double currD = new Double(curr);
-							int p = (int)(currD/totalD * 100);
+							int p = (int)(new Double(curr)/new Double(total) * 100);
 							downProgressBar.setProgress(p);
 							
 							fileNameTextView.setText(context.getResources().getString(R.string.copying_file) + PcOpManager.copyFileName);
-							totalProgressTextView.setText(new Tools().js(totalD));
-							currentProgressTextView.setText(new Tools().js(currD));
 							
-							if (total.equals(curr)) {
+							totalProgressTextView.setText(new Tools().js(total));
+							currentProgressTextView.setText(new Tools().js(curr));
+							if (total==curr) {
 								okBtn.setVisibility(View.VISIBLE);
 							}
-
 							super.handleMessage(msg);
 						}
 

@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.wifiplayer.R;
-import com.wifiplayer.net.udp.SearchPc;
 
 import android.content.Context;
 import android.util.Log;
@@ -42,17 +41,14 @@ public class FileListAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return files.length();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		try {
 			return files.get(position);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -60,13 +56,11 @@ public class FileListAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
 		convertView = LayoutInflater.from(context).inflate(resource, null);
 		ImageView iv = (ImageView) convertView.findViewById(ints[0]);
 		TextView nameTv = (TextView) convertView.findViewById(ints[1]);
@@ -81,8 +75,6 @@ public class FileListAdapter extends BaseAdapter {
 			pf = (JSONObject) files.get(position);
 			nameTv.setText(pf.getString("name"));
 			size.setText(pf.getString("size"));
-			Log.i("receive", "pf.getBoolean(\"sys\"):" + pf.getBoolean("sys"));
-
 			if (position == 0 && !pf.getBoolean("sys")) {
 				iv.setImageResource(R.drawable.pre);
 			} else {
@@ -110,11 +102,8 @@ public class FileListAdapter extends BaseAdapter {
 			}
 			
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 		return convertView;
 	}
 	

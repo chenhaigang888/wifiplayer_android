@@ -112,7 +112,7 @@ public class ReceiveThread implements Runnable {
 						byte[] buffer = new byte[1024*1024];
 						while ((len = raf.read(buffer, 0, buffer.length)) != -1) {
 							alreadyUpload += len;
-							os = s.getOutputStream();
+//							os = s.getOutputStream();
 							os.write(buffer, 0, len);
 							os.flush();
 //							System.out.println("已经上传的长度:"+ alreadyUpload);

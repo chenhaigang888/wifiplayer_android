@@ -12,7 +12,6 @@ public class Tools {
 			js(fileD);
 		}
 		String fileSize = String.format("%.2f", fileD) + strKB[second];
-		
 		return fileSize;
 		
 	}

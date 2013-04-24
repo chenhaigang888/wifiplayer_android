@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.wifiplayer.R;
-import com.wifiplayer.net.udp.UdpServer;
 
 import android.os.Bundle;
 import android.view.Window;

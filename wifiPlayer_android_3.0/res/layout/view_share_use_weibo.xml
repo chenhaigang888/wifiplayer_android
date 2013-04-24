@@ -33,7 +33,7 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:gravity="top"
-            android:background="@drawable/ip_edittext"
+            android:background="@drawable/in"
             android:text="@string/share_content"
             android:layout_marginLeft="5dp"/>
     </LinearLayout>

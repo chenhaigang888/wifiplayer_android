@@ -4,12 +4,9 @@ package com.wifiplayer.adapters;
 import java.util.List;
 
 import com.wifiplayer.R;
-import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.bean.FindedPC;
-import com.wifiplayer.net.udp.SearchPc;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,19 +39,16 @@ public class EnableCtrlPCAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return pcs.size();
 	}
 
 	@Override
 	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
 		return pcs.get(arg0);
 	}
 
 	@Override
 	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

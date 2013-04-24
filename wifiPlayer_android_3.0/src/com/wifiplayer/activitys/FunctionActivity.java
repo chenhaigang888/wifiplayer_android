@@ -130,7 +130,6 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 				ServerManager sm = new ServerManager();
 				sm.startServer();
 				new UdpServer().start();
-				
 			}
 		}).start();
 	}
@@ -289,10 +288,8 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	public boolean onItemLongClick(final AdapterView<?> arg0, final View arg1, final int arg2,
-			final long arg3) {
+	public boolean onItemLongClick(final AdapterView<?> arg0, final View arg1, final int arg2, final long arg3) {
 		final JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
-		
 		final Dialog dialog = new Dialog(context, R.style.no_title_dialog);
 		View view = new FileOpView(context, dialog, pf, arg0, arg2).getView();
 		dialog.setContentView(view);
@@ -300,6 +297,11 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		return true;
 	}
 	
+	/**
+	 * 广播接收器
+	 * @author Administrator
+	 *
+	 */
 	class MyBroadCastReceiver extends BroadcastReceiver {
 
 		@Override
@@ -450,7 +452,6 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
                 View view = new TxWeiboView(context, dialog, oAuth).getView();
                 dialog.setContentView(view);
                 dialog.show();
-                
             }
         }
     }

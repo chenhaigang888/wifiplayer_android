@@ -118,7 +118,9 @@ public class ReceiveThread extends Thread {
 				openFileReply(bodyArray);
 				break;
 			case Head.OPEN_DIR_REPLY:// 打开文件夹返回
+				System.out.println("打开文件夹返回"); 
 				bodyArray = readBody(head);
+				Log.i("receive", "打开文件夹返回:" + new String(bodyArray));
 				openDirReply(bodyArray);
 				break;
 			default:
@@ -146,10 +148,9 @@ public class ReceiveThread extends Thread {
 
 	int sendSecond = 0;// 纪录更新pragressBar的次数
 	Timer t = null;
-	HashMap<String, String> map = null;
+	HashMap<String, Object> map = null;
 	long currReadLenth = 0; // 已经读取的长度
 	Message msg = null;
-
 	/**
 	 * 将pc的文件拷贝到手机内
 	 * 
@@ -159,8 +160,9 @@ public class ReceiveThread extends Thread {
 		
 		File document = new File(Environment.getExternalStorageDirectory() + "/wifiPlayer/");
 		document.mkdirs();// 创建文件夹
-		map = new HashMap<String, String>();
+		map = new HashMap<String, Object>();
 		try {
+			System.out.println("PcOpManager.copyFileName:" + PcOpManager.copyFileName);
 			RandomAccessFile raf = new RandomAccessFile(document.getAbsolutePath() + "/" + PcOpManager.copyFileName, "rw");// "rw":以读写方式打开指定文件，不存在就创建新文件。
 			byte[] bodyArray = readBody(head);
 			Log.i("receive", "String(bodyArray):" + new String(bodyArray));
@@ -176,13 +178,13 @@ public class ReceiveThread extends Thread {
 			while ((len = is.read(buffer, 0, buffer.length)) != -1) {
 				currReadLenth += len;
 				raf.write(buffer, 0, len);
-
+				
 				if (currReadLenth == fileLenth) {
 					msg = new Message();
 					msg.setTarget(FileOpView.downLoadHandler);
 //					map = new HashMap<String, String>();
-					map.put("total", fileLenth + "");
-					map.put("curr", fileLenth + "");
+					map.put("total", fileLenth);
+					map.put("curr", fileLenth);
 					map.put("finish", "finish");
 					msg.obj = map;
 					msg.sendToTarget();
@@ -198,10 +200,10 @@ public class ReceiveThread extends Thread {
 							public void run() {
 //								map = new HashMap<String, String>();
 								if (map != null) {
-									map.put("total", fileLenth + "");
-									map.put("curr", currReadLenth + "");
+									map.put("total", fileLenth);
+									map.put("curr", currReadLenth);
 									map.put("finish", "");
-
+									
 									msg = new Message();
 									msg.setTarget(FileOpView.downLoadHandler);
 									msg.obj = map;
@@ -214,36 +216,35 @@ public class ReceiveThread extends Thread {
 //									map = null;
 									msg = null;
 								}
-								
 							}
 						}, 1000);
 					}
-					
 				}
-
-				
 			}
 			raf.close();
-//			t = null;
 			msg = null;
 			map = null;
-			ReqReplyOp rro = new ReqReplyOp();
-			rro.setCmd(Head.COPY_FILE_2_PHONE_REPLY);
-			rro.setContent("下载完成!");
-			rro.setStatus(0);
-			SendBroadCastUtil.sendBroadCast(context, rro);
-
+			sendBroad(Head.COPY_FILE_2_PHONE_REPLY, "下载完成!", 0);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			sendBroad(Head.COPY_FILE_2_PHONE_REPLY, "存储空间不足!", 0);
 			e.printStackTrace();
 		}
 		
 	}
+	
+	private void sendBroad(short cmd, String content, int status) {
+		ReqReplyOp rro = new ReqReplyOp();
+		rro.setCmd(cmd);
+		rro.setContent(content);
+		rro.setStatus(status);
+		SendBroadCastUtil.sendBroadCast(context, rro);
+	}
 
 	private byte[] readBody(Head head) {
+		Log.i("receive", "head.cmd:" + head.getCmd());
+		Log.i("receive", "head.PackBodyLenth:" + head.getPackBodyLenth());
 		byte[] bodyArray = new byte[head.getPackBodyLenth()];
 		int len = readData(socket, 0, bodyArray);
 		if (len == -1) {
@@ -253,7 +254,7 @@ public class ReceiveThread extends Thread {
 		return bodyArray;
 	}
 
-	/**
+	/** 
 	 * 打开文件返回
 	 * 
 	 * @param bodyArray
