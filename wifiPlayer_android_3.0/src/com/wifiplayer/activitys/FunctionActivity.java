@@ -45,6 +45,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -76,7 +77,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	public static String currDir = null;
 	
 	
-	public static Oauth2AccessToken accessToken;
+//	public static Oauth2AccessToken accessToken;
 	public static final short SINA_WEIBO_SHARE_SUCC = 0x2000;//新浪微博分享成功
 	public static final short SINA_WEIBO_SHARE_FAIL = 0x2001;//新浪微博分享失败
 	
@@ -108,7 +109,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 //		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_function);
 		
-		accessToken = AccessTokenKeeper.readAccessToken(this);
+//		accessToken = AccessTokenKeeper.readAccessToken(this);
 		pd = new PromptDialog(context);
 		init();// 初始化控件
 		// loadData();// 初始化数据
@@ -399,13 +400,15 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	 * @param picPath
 	 * @throws WeiboException
 	 */
-	public void share2weibo(String content) throws WeiboException {
+	public void share2weibo(String content,Oauth2AccessToken accessToken) throws WeiboException {
+//		accessToken = AccessTokenKeeper.readAccessToken(this);
     	StatusesAPI sapi = new StatusesAPI(accessToken);
     	
     	sapi.update(content, null, null, new RequestListener() {
 			
 			@Override
 			public void onIOException(IOException arg0) {
+				Log.i("receive", "--------onIOException--------");
 				ReqReplyOp rro = new ReqReplyOp();
 				rro.setCmd(SINA_WEIBO_SHARE_FAIL);
 				SendBroadCastUtil.sendBroadCast(context, rro);
@@ -413,6 +416,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			
 			@Override
 			public void onError(WeiboException arg0) {
+				Log.i("receive", "--------onError--------");
 				ReqReplyOp rro = new ReqReplyOp();
 				rro.setCmd(SINA_WEIBO_SHARE_FAIL);
 				SendBroadCastUtil.sendBroadCast(context, rro);
@@ -420,6 +424,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			
 			@Override
 			public void onComplete(String arg0) {
+				Log.i("receive", "--------onComplete--------");
 				ReqReplyOp rro = new ReqReplyOp();
 				rro.setCmd(SINA_WEIBO_SHARE_SUCC);
 				SendBroadCastUtil.sendBroadCast(context, rro);

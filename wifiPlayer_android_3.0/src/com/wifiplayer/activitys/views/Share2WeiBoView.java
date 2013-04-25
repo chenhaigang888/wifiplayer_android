@@ -1,5 +1,6 @@
 package com.wifiplayer.activitys.views;
 
+import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.WeiboException;
 import com.wifiplayer.R;
 import com.wifiplayer.activitys.FunctionActivity;
@@ -20,11 +21,13 @@ public class Share2WeiBoView implements View.OnClickListener{
 
 	private Context context;
 	private Dialog dialog;
+	private Oauth2AccessToken accessToken;
 	
-	public Share2WeiBoView(Context context, Dialog dialog) {
+	public Share2WeiBoView(Context context, Dialog dialog, Oauth2AccessToken accessToken) {
 		super();
 		this.context = context;
 		this.dialog = dialog;
+		this.accessToken = accessToken;
 	}
 
 
@@ -53,7 +56,7 @@ public class Share2WeiBoView implements View.OnClickListener{
 		case R.id.okButton:
 			FunctionActivity fa = (FunctionActivity)context;
 			try {
-				fa.share2weibo(shareEditText.getText().toString());
+				fa.share2weibo(shareEditText.getText().toString(), accessToken);
 			} catch (WeiboException e) {
 				e.printStackTrace();
 			}

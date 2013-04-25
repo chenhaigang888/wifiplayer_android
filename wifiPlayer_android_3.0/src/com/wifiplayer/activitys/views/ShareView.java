@@ -1,5 +1,6 @@
 package com.wifiplayer.activitys.views;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import com.tencent.weibo.oauthv2.OAuthV2;
@@ -10,6 +11,8 @@ import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
 import com.weibo.sdk.android.WeiboDialogError;
 import com.weibo.sdk.android.WeiboException;
+import com.weibo.sdk.android.api.StatusesAPI;
+import com.weibo.sdk.android.net.RequestListener;
 import com.wifiplayer.R;
 import com.wifiplayer.utils.AccessTokenKeeper;
 
@@ -18,6 +21,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -32,7 +36,7 @@ public class ShareView {
 
 	private Context context;
 	private Dialog dialog;
-	private Weibo mWeiBo;
+//	private Weibo mWeiBo;
 	
 	
 	
@@ -42,7 +46,6 @@ public class ShareView {
 		this.dialog = dialog;
 	}
 
-	public static Oauth2AccessToken accessToken;
 	
 	
 	/*腾讯微博*/
@@ -73,8 +76,18 @@ public class ShareView {
 			@Override
 			public void onClick(View v) {
 				dialog.cancel();
-				mWeiBo = Weibo.getInstance("308491239", "http://www.xn--yeto9bx06i.com");
-				mWeiBo.authorize(context, new AuthDialogListener());
+				Oauth2AccessToken accToken = AccessTokenKeeper.readAccessToken(context);
+					Log.i("receive", "accToken.getExpiresTime():" + accToken.getExpiresTime());
+					if (!accToken.getToken().equals("")) {
+						Dialog share_dialog = new Dialog(context, R.style.no_title_dialog);
+						View view = new Share2WeiBoView(context, share_dialog, accToken).getView();
+						share_dialog.setContentView(view);
+						share_dialog.show();
+				} else {
+					Log.i("receive", "认证中:");
+					Weibo mWeiBo = Weibo.getInstance("308491239", "http://www.xn--yeto9bx06i.com");
+					mWeiBo.authorize(context, new AuthDialogListener());
+				}
 			}
 		});
 		
@@ -128,13 +141,16 @@ public class ShareView {
 
         @Override
         public void onComplete(Bundle values) {
+        	Log.i("receive", "新浪微博进来了吗");
             String token = values.getString("access_token");
             String expires_in = values.getString("expires_in");
-            accessToken = new Oauth2AccessToken(token, expires_in);
+            Oauth2AccessToken accessToken = new Oauth2AccessToken(token, expires_in);
+            Log.i("receive", "认证成功前");
             if (accessToken.isSessionValid()) {
+            	Log.i("receive", "认证成功");
                 String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new java.util.Date(accessToken.getExpiresTime()));
                 Dialog share_dialog = new Dialog(context, R.style.no_title_dialog);
-				View view = new Share2WeiBoView(context, share_dialog).getView();
+				View view = new Share2WeiBoView(context, share_dialog, accessToken).getView();
 				share_dialog.setContentView(view);
 				share_dialog.show();
                 try {
@@ -148,16 +164,19 @@ public class ShareView {
 
         @Override
         public void onError(WeiboDialogError e) {
+        	Log.i("receive", "----------------------onError-----------------------");
             Toast.makeText(context,  "Auth error : " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onCancel() {
+        	Log.i("receive", "----------------------onCancel-----------------------");
             Toast.makeText(context, "Auth cancel", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onWeiboException(WeiboException e) {
+        	Log.i("receive", "----------------------onWeiboException-----------------------");
             Toast.makeText(context,  "Auth exception : " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
