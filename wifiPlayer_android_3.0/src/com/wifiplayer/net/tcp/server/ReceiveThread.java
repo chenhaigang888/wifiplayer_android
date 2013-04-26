@@ -41,7 +41,7 @@ public class ReceiveThread implements Runnable {
 		while (isReceive) {
 			System.out.println("isReceive:" + isReceive);
 			
-			byte[] headArray = new byte[14];
+			byte[] headArray = new byte[16];
 			int len = readData(s, 0, headArray);
 			System.out.println("len:" + len);
 			if (len == -1) {
@@ -255,7 +255,7 @@ public class ReceiveThread implements Runnable {
 	/**
 	 * 获取文件夹
 	 */
-	private void openDir(String path, short cmd) {
+	private void openDir(String path, int cmd) {
 		try {
 			String str = ReadDirectoryFile.listFile(path).toString();
 			System.out.println("str:" + str);

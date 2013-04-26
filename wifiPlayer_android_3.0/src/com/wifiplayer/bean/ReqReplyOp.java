@@ -9,15 +9,15 @@ import java.io.Serializable;
  */
 public class ReqReplyOp implements Serializable{
 
-	private short cmd;//当前操作
+	private int cmd;//当前操作
 	private int status;//状态 0表示成功，1表示操作失败
 	private String content;//内容
 	
 	
-	public short getCmd() {
+	public int getCmd() {
 		return cmd;
 	}
-	public void setCmd(short cmd) {
+	public void setCmd(int cmd) {
 		this.cmd = cmd;
 	}
 	public int getStatus() {

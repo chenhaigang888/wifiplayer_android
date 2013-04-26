@@ -112,7 +112,7 @@ public class PcOpManager {
 	 * @param cmd
 	 * @param path
 	 */
-	private static void sendOpCMD(Context context, short cmd, String path) {
+	private static void sendOpCMD(Context context, int cmd, String path) {
 		byte[] pathArr = null;
 		int pathArrLenth = 0;
 		OpenDirBody odb = null;

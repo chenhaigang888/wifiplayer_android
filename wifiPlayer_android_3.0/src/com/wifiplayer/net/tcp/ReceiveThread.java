@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.wifiplayer.activitys.FunctionActivity;
 import com.wifiplayer.activitys.utils.PcOpManager;
 import com.wifiplayer.activitys.utils.SendBroadCastUtil;
 import com.wifiplayer.activitys.views.FileOpView;
@@ -93,7 +92,7 @@ public class ReceiveThread extends Thread {
 
 	public void receive_() {
 		while (isReceive) {
-			byte[] headArray = new byte[14];
+			byte[] headArray = new byte[16];
 			int len = readData(socket, 0, headArray);
 			if (len == -1) {
 				isReceive = false;
@@ -234,7 +233,7 @@ public class ReceiveThread extends Thread {
 		
 	}
 	
-	private void sendBroad(short cmd, String content, int status) {
+	private void sendBroad(int cmd, String content, int status) {
 		ReqReplyOp rro = new ReqReplyOp();
 		rro.setCmd(cmd);
 		rro.setContent(content);

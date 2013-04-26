@@ -34,7 +34,6 @@ import com.wifiplayer.net.tcp.ConnServer;
 import com.wifiplayer.net.tcp.server.ServerManager;
 import com.wifiplayer.net.udp.SearchPc;
 import com.wifiplayer.net.udp.UdpServer;
-import com.wifiplayer.utils.AccessTokenKeeper;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -78,11 +77,11 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 	
 	
 //	public static Oauth2AccessToken accessToken;
-	public static final short SINA_WEIBO_SHARE_SUCC = 0x2000;//新浪微博分享成功
-	public static final short SINA_WEIBO_SHARE_FAIL = 0x2001;//新浪微博分享失败
+	public static final int SINA_WEIBO_SHARE_SUCC = 0x2000;//新浪微博分享成功
+	public static final int SINA_WEIBO_SHARE_FAIL = 0x2001;//新浪微博分享失败
 	
-	public static final short TX_WEIBO_SHARE_SUCC = 0x2101;//腾讯微博分享成功
-	public static final short TX_WEIBO_SHARE_FAIL = 0x2102;//腾讯微博分享成功
+	public static final int TX_WEIBO_SHARE_SUCC = 0x2101;//腾讯微博分享成功
+	public static final int TX_WEIBO_SHARE_FAIL = 0x2102;//腾讯微博分享成功
 	
   private OAuthV2 oAuth;
 	
@@ -309,7 +308,7 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		public void onReceive(Context context, Intent intent) {
 			pd.closePromptDialog();
 			ReqReplyOp rro = (ReqReplyOp) intent.getSerializableExtra("rro");
-			short cmd = rro.getCmd();
+			int cmd = rro.getCmd();
 			switch (cmd) {
 			case Head.CONN_SERVER_REPLY:
 				connServerReply(rro);
