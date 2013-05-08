@@ -51,7 +51,6 @@ public class ReceiveThread extends Thread {
 	 * @param bodyArray
 	 */
 	private void openDirReply(byte[] bodyArray) {
-		// TODO Auto-generated method stub
 		connServerReply(bodyArray);
 	}
 
@@ -61,7 +60,6 @@ public class ReceiveThread extends Thread {
 	 * @param bodyArray
 	 */
 	private void connServerReply(byte[] bodyArray) {
-
 		String bodyStr = new String(bodyArray);
 		ReqReplyOp rro = new ReqReplyOp();
 		rro.setCmd(Head.CONN_SERVER_REPLY);

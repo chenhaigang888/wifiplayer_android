@@ -247,12 +247,12 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 		/*判断用户点击的是否为上一页选项*/
 		try {
 			JSONObject pf = (JSONObject) arg0.getAdapter().getItem(arg2);
-			if (arg2 == 0 && !pf.getBoolean("sys")) {
+			if (arg2 == 0 && !pf.getString("sys").equals("true")) {
 				try {
 					if (currDir == null) {
 						Toast.makeText(context, R.string.already_2_main_dir, Toast.LENGTH_LONG).show();
 						return;
-					}
+					} 
 					if (SearchPc.os.equals("Mac OS X")) {
 						currDir = currDir.substring(0, currDir.lastIndexOf("/"));
 					} else if(SearchPc.os.equals("android")) {
@@ -270,11 +270,11 @@ public class FunctionActivity extends Activity implements View.OnClickListener,
 			String path = pf.getString("path");
 			/*点击正常目录的时候*/
 			// 判断是否是文件夹
-			if (pf.getBoolean("dir")) {// 是文件夹
+			if (pf.getString("dir").equals("true")) {// 是文件夹
 				currDir = path;
 				PcOpManager.openDir(path, context);
 			} else {
-				if (pf.getBoolean("sys")) {//是系统分区
+				if (pf.getString("sys").equals("true")) {//是系统分区
 					PcOpManager.openDir(pf.getString("name"), context);
 					currDir = pf.getString("name");
 				} else {

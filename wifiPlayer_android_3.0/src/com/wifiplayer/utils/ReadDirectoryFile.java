@@ -29,7 +29,7 @@ public class ReadDirectoryFile {
 		List<PcFile> list = new ArrayList<PcFile>();
 		List<PcFile> dirs = new ArrayList<PcFile>();
 		List<PcFile> files = new ArrayList<PcFile>();
-		File[] fs = null;
+		File[] fs = null; 
 		System.err.println("查看目录:"+path);
 		File file = new File(path);
 		if(file==null){
@@ -44,14 +44,14 @@ public class ReadDirectoryFile {
 					pf.setName(f.getName());
 					pf.setPath(f.getAbsolutePath());
 					pf.setCreateDate(getFileModifyTime(f));
-					pf.setSys(false);
+					pf.setSys("false");
 					if(f.isDirectory()){//设置是否为文件夹
 						pf.setSize("");
-						pf.setDir(true);
+						pf.setDir("true");
 						dirs.add(pf);
 					}else{
 						pf.setSize(new Tools().js(f.length()));
-						pf.setDir(false);
+						pf.setDir("false");
 						files.add(pf);
 					}
 					
@@ -61,9 +61,9 @@ public class ReadDirectoryFile {
 		}
 		PcFile pf = new PcFile();
 		pf.setName("\\上一页...");
-		pf.setSys(false);
+		pf.setSys("false");
 		pf.setCreateDate("");
-		pf.setDir(false);
+		pf.setDir("false");
 		pf.setPath("");
 		pf.setSize("");
 		list.add(pf);

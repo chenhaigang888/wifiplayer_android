@@ -75,7 +75,7 @@ public class FileOpView {
 			public void onClick(View v) {
 				dialog.cancel();
 				try {
-					if (pf.getBoolean("sys")) {
+					if (pf.getString("sys").equals("true")) {
 						Toast.makeText(context, R.string.del_err, Toast.LENGTH_LONG).show();
 						return;
 					}
@@ -118,13 +118,13 @@ public class FileOpView {
 				dialog.cancel();
 				try {
 					if (!SearchPc.os.equals("android")) {
-						if (pf.getBoolean("sys")) {
+						if (pf.getString("sys").equals("true")) {
 							Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
 							return;
 						}
 					}
 					
-					if (pf.getBoolean("dir")) {
+					if (pf.getString("dir").equals("true")) {
 						Toast.makeText(context, R.string.copy_err, Toast.LENGTH_LONG).show();
 						return;
 					}

@@ -74,10 +74,10 @@ public class FileListAdapter extends BaseAdapter {
 			pf = (JSONObject) files.get(position);
 			nameTv.setText(pf.getString("name"));
 			size.setText(pf.getString("size"));
-			if (position == 0 && !pf.getBoolean("sys")) {
+			if (position == 0 && !pf.getString("sys").equals("true")) {
 				iv.setImageResource(R.drawable.pre);
 			} else {
-				if (pf.getBoolean("dir")) {
+				if (pf.getString("dir").equals("true")) {
 					iv.setImageResource(R.drawable.dir);
 				} else {
 					String suffix = getFileSuffix(pf.getString("path"));//文件后缀

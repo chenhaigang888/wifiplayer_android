@@ -1,6 +1,5 @@
 package com.wifiplayer.activitys.views;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import com.tencent.weibo.oauthv2.OAuthV2;
@@ -11,8 +10,6 @@ import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
 import com.weibo.sdk.android.WeiboDialogError;
 import com.weibo.sdk.android.WeiboException;
-import com.weibo.sdk.android.api.StatusesAPI;
-import com.weibo.sdk.android.net.RequestListener;
 import com.wifiplayer.R;
 import com.wifiplayer.utils.AccessTokenKeeper;
 

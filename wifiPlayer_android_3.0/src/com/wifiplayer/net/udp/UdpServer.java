@@ -38,22 +38,14 @@ public class UdpServer extends Thread{
 			System.out.println("接收到的UDP内容_android：" + recvStr);
 			/*发送回复信息*/
 			String ip = ds.getInetAddress() + "";
-			ip = ip.replace("/", "");//对方的ip
-			InetAddress ia = InetAddress.getLocalHost();
-			String myIp = (ia + "").replace("/", "");;
-			Log.i("receive", "我的ipmyIp:" + myIp);
-			Log.i("receive", "对方的Ip:" + ip);
-			if (ip.equals(myIp)) {
-				
-			} else {
-				int port = recevDp.getPort();//发送者的端口
-				InetAddress addr = recevDp.getAddress();//发送者的ip地址
-				String[] sysInfo = getVersion();
-				String sendStr = sysInfo[3] + "&" + sysInfo[1] + "&" + sysInfo[2];
-				byte[] sendBuf = sendStr.getBytes();
-				DatagramPacket sendDp = new DatagramPacket(sendBuf, sendBuf.length, addr, port);
-				ds.send(sendDp);
-			}
+			int port = recevDp.getPort();//发送者的端口
+			InetAddress addr = recevDp.getAddress();//发送者的ip地址
+			String[] sysInfo = getVersion();
+			String sendStr = sysInfo[3] + "&" + sysInfo[1] + "&" + sysInfo[2];
+			byte[] sendBuf = sendStr.getBytes();
+			DatagramPacket sendDp = new DatagramPacket(sendBuf, sendBuf.length, addr, port);
+			ds.send(sendDp);
+
 			ds.close();
 			startUdpServer();
 		} catch (IOException e) {
